@@ -32,11 +32,15 @@ Aplikasi dikerjakan melalui github untuk mempermudah kolaborasi. Alur pengerjaan
 1. install git dan buat akun github
 2. clone repositori ini
 
-    `git clone https://github.com/salamanderman234/project-intero-2023.git`
+    ```git
+    git clone https://github.com/salamanderman234/project-intero-2023.git
+    ```
 
 3. masuk ke branch `dev`
 
-    `git checkout dev`
+    ```git
+    git checkout dev
+    ```
 
 ### Pembuatan branch
 
@@ -44,11 +48,15 @@ Pengerjaan dilakukan pada branch layanan masing-masing misal untuk layanan auth 
 
 1. Pastikan sudah berada pada branch `dev` dengan menggunakan `git status`. Pastikan tertulis `on branch dev`
 
-    `git status`
+    ```git
+    git status
+    ```
 
 2. Buat branch baru
 
-    `git checkout layanan/<nama layanan>`
+    ```git
+    git checkout layanan/<nama layanan>
+    ```
 
 3. Pastikan lagi sudah masuk ke branch yang baru dibuat dengan melakukan `git status`. Pastikan tertulis `on branch layanan/<nama layanan>`
 4. Pengerjaan aplikasi sekarang sudah bisa dimulai
