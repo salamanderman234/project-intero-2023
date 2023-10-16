@@ -1,7 +1,5 @@
 # Project Learning Management System
 
----
-
 Project pembuatan aplikasi learning management system berbasis microservice untuk memenuhi tugas mata kuliah interoperabilitas. Referensi aplikasi yang dipakai adalah sistem [Oase](https://oase.unud.ac.id/) milik Universitas Udayana.
 
 ## Daftar Isi
