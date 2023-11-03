@@ -30,5 +30,6 @@ func ConnectDatabase() (*gorm.DB, error) {
 
 	return gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
+		TranslateError: true,
 	})
 }
