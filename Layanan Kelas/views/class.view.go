@@ -64,7 +64,7 @@ func (cv *classView) Read(c echo.Context) error {
 		return c.JSON(respStatusCode, resp)
 	}
 	pageInt,_ := strconv.Atoi(pageString)
-	page := uint(math.Max(float64(pageInt), 0))
+	page := uint(math.Max(float64(pageInt), 1))
 	datas, pagination, err := cv.classService.GetClassList(requestContext, query, page)
 	if err != nil {
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
@@ -108,20 +108,19 @@ func (cv *classView) Delete(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
-		Message: "class updated",
+		Message: "class deleted",
 		Datas: nil,
 		Errors: nil,
 	}
 	idString := c.QueryParam("id")
 	id,_ := strconv.Atoi(idString)
-	aff, err := cv.classService.DeleteClass(requestContext, uint(id))
+	_, err := cv.classService.DeleteClass(requestContext, uint(id))
 	if err != nil {
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return c.JSON(respStatusCode, resp)
 	}
 	resp.Datas = map[string]any {
 		"class_id" : id,
-		"rows_affected": aff,
 	}
-	return nil
+	return c.JSON(respStatusCode, resp)
 }

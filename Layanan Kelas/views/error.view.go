@@ -14,13 +14,16 @@ func handleErrorResponse(err error) (int, string, []domain.ErrorDetail) {
 		return http.StatusBadRequest, domain.ErrFormValidation.Error(), helper.GenerateErrorDetail(errs)
 	}
 	if errors.Is(err, domain.ErrConversionType) || errors.Is(err, domain.ErrGormInGeneral) {
-		return http.StatusInternalServerError, "internal server error", nil
+		return http.StatusInternalServerError, "internal server error", []domain.ErrorDetail{}
 	}
 	if errors.Is(err, domain.ErrDuplicateEnties) {
-		return http.StatusUnprocessableEntity, domain.ErrDuplicateEnties.Error(), nil
+		return http.StatusUnprocessableEntity, domain.ErrDuplicateEnties.Error(), []domain.ErrorDetail{}
 	}
 	if errors.Is(err, domain.ErrResourceNotFound) {
-		return http.StatusNotFound, domain.ErrResourceNotFound.Error(), nil
+		return http.StatusNotFound, domain.ErrResourceNotFound.Error(), []domain.ErrorDetail{}
+	}
+	if errors.Is(err, domain.ErrForeignKeyViolated) {
+		return http.StatusUnprocessableEntity, domain.ErrForeignKeyViolated.Error(), []domain.ErrorDetail{}
 	}
 	return 0, "", nil
 }

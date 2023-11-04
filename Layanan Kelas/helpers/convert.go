@@ -9,7 +9,7 @@ func Convert(data any, target any) error {
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(jsonEncode, target)
+	err = json.Unmarshal(jsonEncode, &target)
 	if err != nil {
 		return err
 	}

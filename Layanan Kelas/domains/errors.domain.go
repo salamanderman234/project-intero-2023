@@ -8,4 +8,5 @@ var (
 	ErrFormValidation = errors.New("validation error")
 	ErrResourceNotFound = errors.New("resource not found error")
 	ErrDuplicateEnties = errors.New("duplicate entries error")
+	ErrForeignKeyViolated = errors.New("foreign key violated error")
 )

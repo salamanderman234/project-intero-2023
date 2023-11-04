@@ -7,12 +7,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func HandleRepositoryError(err error) error {
+func handleRepositoryError(result *gorm.DB) error {
+	err := result.Error
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return domain.ErrDuplicateEnties
 	}
-	if errors.Is(err, gorm.ErrRecordNotFound) {
+	if errors.Is(err, gorm.ErrRecordNotFound){
 		return domain.ErrResourceNotFound
+	}
+	if errors.Is(err, gorm.ErrForeignKeyViolated) {
+		return domain.ErrForeignKeyViolated
 	}
 	if err != nil {
 		return domain.ErrGormInGeneral

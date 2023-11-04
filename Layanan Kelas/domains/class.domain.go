@@ -10,41 +10,40 @@ import (
 type ClassModel struct {
 	gorm.Model
 	GrupKelasID     *uint         		`json:"grup_kelas_id" gorm:"not null" valid:"int,required~field grup kelas id diperlukan"`
-	GrupKelas       map[string]string   `json:"grup_kelas" gorm:"foreignKey:GrupKelasID;references:ID"`
 	GuruID          *uint         		`json:"guru_id" gorm:"not null" valid:"int,required~field guru id diperlukan"`
-	Guru            map[string]string   `json:"guru,omitempty" gorm:"foreignKey:GuruID;references:ID"`
 	MataPelajaranID *uint         		`json:"mata_pelajaran_id" gorm:"not null" valid:"int,required~mata pelajaran id diperlukan"`
-	MataPelajaran   map[string]string   `json:"mata_pelajaran,omitempty" gorm:"foreignKey:MataPelajaranID;references:ID"`
 	TahunAjaranID   *uint         		`json:"tahun_ajaran_id" gorm:"not null" valid:"int,required~field mata pelajaran id diperlukan"`
-	TahunAjaran     map[string]string   `json:"tahun_ajaran,omitempty" gorm:"foreignKey:TahunAjaranID;references:ID"`
-	ListSiswa       []map[string]string `json:"list_siswa,omitempty"`
 	Deskripsi       string        		`json:"deskripsi" gorm:"type:varchar(255);default:'-'"`
 }
 
+func (ClassModel) TableName() string {
+	return "kelas"
+}
+
 type ClassEntity struct {
-	ID 				uint 				`json:"id"`
+	ID 				uint 				`json:"id,omitempty"`
 	GrupKelasID     *uint         		`json:"grup_kelas_id,omitempty"`
-	GrupKelas       map[string]string   `json:"grup_kelas"`
+	GrupKelas       map[string]string   `json:"grup_kelas,omitempty"`
 	GuruID          *uint         		`json:"guru_id,omitempty"`
-	Guru            map[string]string   `json:"guru"`
+	Guru            map[string]string   `json:"guru,omitempty"`
 	MataPelajaranID *uint         		`json:"mata_pelajaran_id,omitempty"`
-	MataPelajaran   map[string]string   `json:"mata_pelajaran"`
+	MataPelajaran   map[string]string   `json:"mata_pelajaran,omitempty"`
 	TahunAjaranID   *uint         		`json:"tahun_ajaran_id,omitempty"`
-	TahunAjaran     map[string]string   `json:"tahun_ajaran"`
-	ListSiswa       []map[string]string `json:"list_siswa"`
-	Deskripsi       string        		`json:"deskripsi"`
+	TahunAjaran     map[string]string   `json:"tahun_ajaran,omitempty"`
+	ListSiswa       []map[string]string `json:"list_siswa,omitempty"`
+	Deskripsi       string        		`json:"deskripsi,omitempty"`
 }
 
 type ClassCreateForm struct {
 	GrupKelasID     *uint         		`json:"grup_kelas_id" valid:"required~grup kelas diperlukan"`
 	GuruID          *uint         		`json:"guru_id" valid:"required~guru diperlukan"`
 	MataPelajaranID *uint         		`json:"mata_pelajaran_id" valid:"required~mata pelajaran diperlukan"`
-	TahunAjaranID   *uint         		`json:"tahun_ajaran_id" valid:"tahun ajaran diperlukan"`
+	TahunAjaranID   *uint         		`json:"tahun_ajaran_id" valid:"required~tahun ajaran diperlukan"`
 	Deskripsi       string        		`json:"deskripsi"`
 }
 
 type ClassUpdateForm struct {
-	GuruID          *uint         		`json:"guru_id" valid:"required~guru diperlukan"`
+	GuruID          *uint         		`json:"guru_id"`
 	Deskripsi       string        		`json:"deskripsi"`
 }
 

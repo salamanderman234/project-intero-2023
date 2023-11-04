@@ -2,6 +2,8 @@ package service
 
 import (
 	"context"
+	"fmt"
+	"math"
 
 	domain "github.com/salamanderman234/project-intro-2023/layanan-kelas/domains"
 	helper "github.com/salamanderman234/project-intro-2023/layanan-kelas/helpers"
@@ -25,6 +27,7 @@ func (c *classService) CreateClass(ctx context.Context, data domain.ClassCreateF
 	if ok, errs := helper.ValidateForm(data); !ok {
 		return result, errs
 	}
+	// TODO: panggil api untuk mengecek setiap id dan jika tidak ada maka return validation error dengan unpross entity
 	// convert to model
 	var dataModel domain.ClassModel
 	if err := helper.Convert(data, &dataModel); err != nil {
@@ -44,7 +47,7 @@ func (c *classService) CreateClass(ctx context.Context, data domain.ClassCreateF
 func (c *classService) GetClassList(ctx context.Context, query string, page uint) ([]domain.ClassEntity, domain.Pagination, error) {
 	var results []domain.ClassEntity
 	pagination := domain.Pagination{}
-	resultsRepo, maxPage, err := c.classRepo.Read(ctx, query, 0, page)
+	resultsRepo, maxPage, err := c.classRepo.Read(ctx, query, 0, uint(math.Max(float64(page), 1)))
 	if err != nil {
 		return results, pagination, err
 	}
@@ -61,12 +64,13 @@ func (c *classService) GetClassList(ctx context.Context, query string, page uint
 }
 func (c *classService) GetClassInfo(ctx context.Context, id uint) (domain.ClassEntity, error) {
 	var result domain.ClassEntity
-	resultRepo, _ ,err := c.classRepo.Read(ctx, "", id, 0)
+	resultRepo, _ ,err := c.classRepo.Read(ctx, "", id, 1)
 	if err != nil {
 		return result, err
 	}
 	// TODO: panggil api lain untuk mendapatkan detail (preload)
-	if err := helper.Convert(resultRepo, &result); err != nil {
+	if err := helper.Convert(resultRepo[0], &result); err != nil {
+		fmt.Println(err)
 		return result, domain.ErrConversionType
 	}
 	return result, nil
