@@ -4,6 +4,7 @@ import (
 	"context"
 
 	domain "github.com/salamanderman234/project-intro-2023/layanan-kelas/domains"
+	helper "github.com/salamanderman234/project-intro-2023/layanan-kelas/helpers"
 )
 
 type studentClassService struct {
@@ -18,15 +19,18 @@ func NewStudentClassService(r domain.StudentClassRepository, sr domain.ServiceRe
 	}
 }
 
-func (s *studentClassService) AssignStudent(ctx context.Context, classId uint, studentId uint) (uint, uint, error) {
+func (s *studentClassService) AssignStudent(ctx context.Context, assignForm domain.AssignStudentForm) (uint, uint, error) {
+	if ok, errs := helper.ValidateForm(assignForm); !ok {
+		return 0, 0, errs
+	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, classId)
+	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.KelasID)
 	if err != nil {
 		return 0, 0, domain.ErrForeignKeyViolated
 	}
 	data := domain.StudentClassModel{
-		SiswaID: &studentId,
-		KelasID: &classId,
+		SiswaID: assignForm.SiswaID,
+		KelasID: assignForm.KelasID,
 	}
 	created, err := s.studentClassRepo.Create(ctx, data)
 	if err != nil {
@@ -34,13 +38,16 @@ func (s *studentClassService) AssignStudent(ctx context.Context, classId uint, s
 	}	
 	return *created.KelasID, *created.SiswaID, nil
 }
-func (s *studentClassService) UnasssignStudent(ctx context.Context, classId uint, studentId uint) (bool, error) {
+func (s *studentClassService) UnasssignStudent(ctx context.Context, assignForm domain.AssignStudentForm) (bool, error) {
+	if ok, errs := helper.ValidateForm(assignForm); !ok {
+		return false, errs
+	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, classId)
+	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.KelasID)
 	if err != nil {
 		return false, domain.ErrForeignKeyViolated
 	}
-	_, err = s.studentClassRepo.Delete(ctx, classId, studentId)
+	_, err = s.studentClassRepo.Delete(ctx, *assignForm.KelasID, *assignForm.SiswaID)
 	if err != nil {
 		return false, err
 	}	

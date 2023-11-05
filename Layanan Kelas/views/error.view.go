@@ -13,7 +13,7 @@ func handleErrorResponse(err error) (int, string, []domain.ErrorDetail) {
 	if errs, ok := err.(govalidator.Errors); ok {
 		return http.StatusBadRequest, domain.ErrFormValidation.Error(), helper.GenerateErrorDetail(errs)
 	}
-	if errors.Is(err, domain.ErrConversionType) || errors.Is(err, domain.ErrGormInGeneral) {
+	if errors.Is(err, domain.ErrConversionType) || errors.Is(err, domain.ErrGormInGeneral) || errors.Is(err, domain.ErrBind) {
 		return http.StatusInternalServerError, "internal server error", []domain.ErrorDetail{}
 	}
 	if errors.Is(err, domain.ErrDuplicateEnties) {

@@ -29,8 +29,8 @@ type StudentClassRepository interface {
 }
 
 type StudentClassService interface {
-	AssignStudent(ctx context.Context, classId uint, studentId uint) (uint, uint, error)
-	UnasssignStudent(ctx context.Context, classId uint, studentId uint) (bool, error)
+	AssignStudent(ctx context.Context, assignForm AssignStudentForm) (uint, uint, error)
+	UnasssignStudent(ctx context.Context, assignForm AssignStudentForm) (bool, error)
 	GetStudentClassList(ctx context.Context, studentId uint) ([]ClassEntity, error)
 }
 

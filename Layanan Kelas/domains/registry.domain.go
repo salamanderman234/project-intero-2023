@@ -1,9 +1,11 @@
 package domain
 
 type ServiceRegistry struct {
-	ClassServ ClassService
+	ClassServ           ClassService
+	StudentClassService StudentClassService
 }
 
 type ViewRegistry struct {
-	ClassVw ClassView
+	ClassVw        ClassView
+	StudentClassVw StudentClassView
 }

@@ -22,7 +22,7 @@ func (cv *classView) Create(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusCreated
 	resp := domain.BasicResponse{
-		Message: "class created",
+		Message: "kelas berhasil dibuat",
 		Datas: nil,
 		Errors: nil,
 	}
@@ -73,6 +73,7 @@ func (cv *classView) Read(c echo.Context) error {
 	resp.Datas = map[string]any {
 		"pagination" : pagination,
 		"datas" : datas,
+		"length" : len(datas),
 	}
 	return c.JSON(respStatusCode, resp)
 }
@@ -81,7 +82,7 @@ func (cv *classView) Update(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
-		Message: "class updated",
+		Message: "kelas berhasil diupdate",
 		Datas: nil,
 		Errors: nil,
 	}
@@ -108,7 +109,7 @@ func (cv *classView) Delete(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
-		Message: "class deleted",
+		Message: "kelas berhasil dihapus",
 		Datas: nil,
 		Errors: nil,
 	}
