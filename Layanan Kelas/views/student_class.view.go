@@ -22,7 +22,7 @@ func (s *studentClassView) AssignStudentToAClass(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
-		Message: "siswa berhasil diassign ke kelas",
+		Message: "success",
 		Datas: nil,
 		Errors: nil,
 	}
@@ -48,7 +48,7 @@ func (s *studentClassView) UnsignStudentFromAClass(c echo.Context) error {
 	requestContext := c.Request().Context()
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
-		Message: "siswa berhasil diunassign ke kelas",
+		Message: "success",
 		Datas: nil,
 		Errors: nil,
 	}
@@ -65,8 +65,8 @@ func (s *studentClassView) UnsignStudentFromAClass(c echo.Context) error {
 		return c.JSON(respStatusCode, resp)
 	}
 	resp.Datas = map[string]int{
-		"student_id" : int(*form.SiswaID),
-		"class_id" : int(*form.KelasID),
+		"student_id" : int(*form.StudentID),
+		"class_id" : int(*form.ClassID),
 	}
 	return c.JSON(respStatusCode, resp)
 }

@@ -24,30 +24,30 @@ func (s *studentClassService) AssignStudent(ctx context.Context, assignForm doma
 		return 0, 0, errs
 	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.KelasID)
+	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.ClassID)
 	if err != nil {
 		return 0, 0, domain.ErrForeignKeyViolated
 	}
 	data := domain.StudentClassModel{
-		SiswaID: assignForm.SiswaID,
-		KelasID: assignForm.KelasID,
+		StudentID: assignForm.StudentID,
+		ClassID: assignForm.ClassID,
 	}
 	created, err := s.studentClassRepo.Create(ctx, data)
 	if err != nil {
 		return 0, 0, err
 	}	
-	return *created.KelasID, *created.SiswaID, nil
+	return *created.ClassID, *created.StudentID, nil
 }
 func (s *studentClassService) UnasssignStudent(ctx context.Context, assignForm domain.AssignStudentForm) (bool, error) {
 	if ok, errs := helper.ValidateForm(assignForm); !ok {
 		return false, errs
 	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.KelasID)
+	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.ClassID)
 	if err != nil {
 		return false, domain.ErrForeignKeyViolated
 	}
-	_, err = s.studentClassRepo.Delete(ctx, *assignForm.KelasID, *assignForm.SiswaID)
+	_, err = s.studentClassRepo.Delete(ctx, *assignForm.ClassID, *assignForm.StudentID)
 	if err != nil {
 		return false, err
 	}	
@@ -62,7 +62,7 @@ func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId
 		return nil, err
 	}
 	for _, result := range results {
-		class, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *result.KelasID)
+		class, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *result.ClassID)
 		if err != nil {
 			return nil, err
 		}

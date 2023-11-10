@@ -12,6 +12,7 @@ import (
 
 func init() {
 	config.SetConfig("./.env")
+	config.RegisterCustomValidationRules()
 }
 
 func main() {
@@ -22,13 +23,24 @@ func main() {
 	router := echo.New()
 	// declare repo
 	classRepository := repository.NewClassRepository(connection)
+	classSubjectRepository := repository.NewClassSubjectRepository(connection)
+	studentClassRepository := repository.NewStudentClassRepository(connection)
 	// declare service
 	repoRegistry := domain.ServiceRegistry{}
 	classService := service.NewClassService(classRepository, repoRegistry)
+	classSubjectService := service.NewClassSubjectService(classSubjectRepository, repoRegistry)
+	studentClassService := service.NewStudentClassService(studentClassRepository, repoRegistry)
+	repoRegistry.ClassServ = classService
+	repoRegistry.StudentClassService = studentClassService
+	repoRegistry.ClassSubjectServ = classSubjectService
 	// declare view
 	classView := view.NewClassView(classService)
+	classSubjectView := view.NewClassSubjectView(classSubjectService)
+	studentClassView := view.NewStudentClassView(studentClassService)
 	viewRegistry := domain.ViewRegistry{
 		ClassVw: classView,
+		ClassSubjectVw: classSubjectView,
+		StudentClassVw: studentClassView,
 	}
 	// register route
 	route.RegisterAllRoutes(router, viewRegistry)

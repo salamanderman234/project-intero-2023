@@ -9,17 +9,19 @@ import (
 
 type StudentClassModel struct {
 	gorm.Model
-	KelasID *uint `json:"kelas_id" gorm:"not null" valid:"int,required~field kelas id diperlukan"`
-	SiswaID *uint `json:"siswa_id" gorm:"not null" valid:"int,required~field siswa id diperlukan"`
+	ClassID *uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
+	StudentID *uint `json:"student_id" gorm:"not null" valid:"int~student id field must be an integer,required~student id field is required"`
+	Year 	*uint `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
 }
 
 type AssignStudentForm struct {
-	KelasID *uint `json:"kelas_id" valid:"int,required~field kelas id diperlukan"`
-	SiswaID *uint `json:"siswa_id" valid:"int,required~field siswa id diperlukan"`
+	ClassID *uint `json:"class_id" gorm:"not null" valid:"int,required~class id field is required"`
+	StudentID *uint `json:"student_id" gorm:"not null" valid:"int,required~student id field is required"`
+	Year 	*uint `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
 }
 
 func (StudentClassModel) TableName() string {
-	return "kelas_siswa"
+	return "student_classes"
 }
 
 type StudentClassRepository interface {

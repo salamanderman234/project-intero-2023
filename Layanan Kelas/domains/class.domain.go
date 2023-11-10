@@ -9,54 +9,52 @@ import (
 
 type ClassModel struct {
 	gorm.Model
-	GrupKelasID     *uint         		`json:"grup_kelas_id" gorm:"not null" valid:"int,required~field grup kelas id diperlukan"`
-	GuruID          *uint         		`json:"guru_id" gorm:"not null" valid:"int,required~field guru id diperlukan"`
-	MataPelajaranID *uint         		`json:"mata_pelajaran_id" gorm:"not null" valid:"int,required~mata pelajaran id diperlukan"`
-	TahunAjaranID   *uint         		`json:"tahun_ajaran_id" gorm:"not null" valid:"int,required~field mata pelajaran id diperlukan"`
-	Deskripsi       string        		`json:"deskripsi" gorm:"type:varchar(255);default:'-'"`
+	FocusID uint `json:"focus_id" gorm:"not null"`
+	Group string `json:"group" gorm:"varchar(255)"`
+	GradeID uint `json:"grade_id" gorm:"not null"`
 }
 
 func (ClassModel) TableName() string {
-	return "kelas"
+	return "classes"
 }
 
 type ClassEntity struct {
-	ID 				uint 				`json:"id,omitempty"`
-	GrupKelasID     *uint         		`json:"grup_kelas_id,omitempty"`
-	GrupKelas       map[string]string   `json:"grup_kelas,omitempty"`
-	GuruID          *uint         		`json:"guru_id,omitempty"`
-	Guru            map[string]string   `json:"guru,omitempty"`
-	MataPelajaranID *uint         		`json:"mata_pelajaran_id,omitempty"`
-	MataPelajaran   map[string]string   `json:"mata_pelajaran,omitempty"`
-	TahunAjaranID   *uint         		`json:"tahun_ajaran_id,omitempty"`
-	TahunAjaran     map[string]string   `json:"tahun_ajaran,omitempty"`
-	ListSiswa       []map[string]string `json:"list_siswa,omitempty"`
-	Deskripsi       string        		`json:"deskripsi,omitempty"`
+	ID 				uint 	`json:"id,omitempty"`
+	FocusID 		uint 	`json:"focus_id" gorm:"not null"`
+	Group 			string 	`json:"group" gorm:"varchar(255)"`
+	GradeID 		uint 	`json:"grade_id" gorm:"not null"`
 }
 
 type ClassCreateForm struct {
-	GrupKelasID     *uint         		`json:"grup_kelas_id" valid:"required~grup kelas diperlukan"`
-	GuruID          *uint         		`json:"guru_id" valid:"required~guru diperlukan"`
-	MataPelajaranID *uint         		`json:"mata_pelajaran_id" valid:"required~mata pelajaran diperlukan"`
-	TahunAjaranID   *uint         		`json:"tahun_ajaran_id" valid:"required~tahun ajaran diperlukan"`
-	Deskripsi       string        		`json:"deskripsi"`
+	FocusID 		uint 	`json:"focus_id" valid:"int~focus id field must be an integer,required~focus id field is required"`
+	Group 			string 	`json:"group" valid:"required~group is required"`
+	GradeID 		uint 	`json:"grade_id" valid:"int~grade id field must be an integer,required~grade id field is required"`
+}
+
+func(ClassCreateForm) GetModelName() string {
+	return "class_subjects"
 }
 
 type ClassUpdateForm struct {
-	GuruID          *uint         		`json:"guru_id"`
-	Deskripsi       string        		`json:"deskripsi"`
+	FocusID 		uint 	`json:"focus_id" valid:"int~focus id field must be an integer,required~focus id field is required"`
+	Group 			string 	`json:"group" valid:"required~group is required"`
+	GradeID 		uint 	`json:"grade_id" valid:"int~grade id field must be an integer,required~grade id field is required"`
+}
+
+func(ClassUpdateForm) GetModelName() string {
+	return "class_subjects"
 }
 
 type ClassRepository interface {
 	Create(ctx context.Context, data ClassModel) (ClassModel, error)
-	Read(ctx context.Context, query string, id uint,page uint) ([]ClassModel, uint, error)
+	Read(ctx context.Context, query string, id uint,page uint, orderBy string, orderWith string) ([]ClassModel, uint, error)
 	Update(ctx context.Context, id uint, data ClassModel) (int, ClassModel, error)
 	Delete(ctx context.Context, id uint) (int, error)
 }
 
 type ClassService interface {
 	CreateClass(ctx context.Context, data ClassCreateForm) (ClassEntity, error)
-	GetClassList(ctx context.Context, query string, page uint) ([]ClassEntity, Pagination,error)
+	GetClassList(ctx context.Context, query string, page uint,orderBy string, orderWith string) ([]ClassEntity, Pagination,error)
 	GetClassInfo(ctx context.Context, id uint) (ClassEntity, error)
 	UpdateClassInfo(ctx context.Context, id uint, updateData ClassUpdateForm) (int, ClassEntity, error)
 	DeleteClass(ctx context.Context, id uint) (bool, error)

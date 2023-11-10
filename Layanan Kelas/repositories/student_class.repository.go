@@ -32,7 +32,7 @@ func (s *studentClassRepository) Read(ctx context.Context, classId uint, student
 	if classId != 0 {
 		searchQuery = searchQuery.Where("siswa_id = ?", studentId)
 	}
-	_, _, err = basicSearchFunc(ctx, s.conn, *searchQuery, 1, &results)
+	_, _, err = basicSearchFunc(ctx, s.conn, *searchQuery, 1, "", "", domain.StudentClassModel{}, &results)
 	return results, err
 }
 func (s *studentClassRepository) Delete(ctx context.Context, classId uint, studentId uint) (int, error) {

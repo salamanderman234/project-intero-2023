@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	domain "github.com/salamanderman234/project-intro-2023/layanan-kelas/domains"
 	"gorm.io/gorm"
@@ -22,23 +21,22 @@ func (c *classRepository) Create(ctx context.Context, data domain.ClassModel) (d
 	_, err := basicCreateFunc(ctx, c.db, &data)
 	return data, err
 }
-func (c *classRepository) Read(ctx context.Context, query string, id uint, page uint) ([]domain.ClassModel, uint,error) {
+func (c *classRepository) Read(ctx context.Context, query string, id uint, page uint, orderBy string, orderWith string) ([]domain.ClassModel, uint,error) {
 	var results []domain.ClassModel
 	var maxPage int64
 	var err error
 	queryDB := c.db.Model(&domain.ClassModel{}).WithContext(ctx)
-	if id == 0 {
-		searchQuery := queryDB.
-			Where("gurus.nama LIKE ?", fmt.Sprintf("%%%s%%", query)).
-			Or("tahun_ajarans.tahun_mulai = ?", query).
-			Or("grup_kelas.konsentrasi LIKE ?", fmt.Sprintf("%%%s%%", query)).
-			Joins("join gurus on gurus.id = kelas.guru_id").
-			Joins("join tahun_ajarans on tahun_ajarans.id = kelas.tahun_ajaran_id").
-			Joins("join grup_kelas on grup_kelas.id = kelas.grup_kelas_id")
-		_, maxPage, err = basicSearchFunc(ctx, c.db, *searchQuery, page, &results)
-	} else {
+	if id != 0 {
 		findQuery := queryDB.Where("id = ?", id)
-		_, _, err = basicSearchFunc(ctx, c.db, *findQuery, page, &results)
+		_, _, err = basicSearchFunc(ctx, c.db, *findQuery, page, orderBy, orderWith, domain.ClassModel{}, &results)
+	} else {
+		searchQuery := queryDB.
+			Where("focuses.focus LIKE ?", "%"+query+"%").
+			Or("grades.grade = ?", "%"+query+"%").
+			Or("classes.group LIKE ?", "%"+query+"%").
+			Joins("join focuses on focuses.id = classes.focus_id").
+			Joins("join grades on grades.id = classes.grade_id")
+		_, maxPage, err = basicSearchFunc(ctx, c.db, *searchQuery, page, orderBy, orderWith, domain.ClassModel{}, &results)
 	}
 	return results, uint(maxPage) ,err
 }

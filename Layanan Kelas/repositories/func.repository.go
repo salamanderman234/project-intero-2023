@@ -18,12 +18,10 @@ func basicCreateFunc(ctx context.Context, c *gorm.DB, data any, customQuery ...*
 	return result, handleRepositoryError(result)
 }
 
-
-
-func basicSearchFunc(ctx context.Context, c *gorm.DB, query gorm.DB, page uint, results any) (*gorm.DB, int64 ,error) {
+func basicSearchFunc(ctx context.Context, c *gorm.DB, query gorm.DB, page uint, orderBy string, orderWith string, model any, results any) (*gorm.DB, int64 ,error) {
 	var maxPage int64
 	query.Count(&maxPage)
-	result := *query.Scopes(paginateScope(page)).Find(results)
+	result := *query.Scopes(orderScope(model, orderBy, orderWith)).Scopes(paginateScope(page)).Find(results)
 	if result.RowsAffected <= 0 {
 		return &result, 0, domain.ErrResourceNotFound
 	}
