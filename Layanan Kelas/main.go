@@ -26,13 +26,18 @@ func main() {
 	classSubjectRepository := repository.NewClassSubjectRepository(connection)
 	studentClassRepository := repository.NewStudentClassRepository(connection)
 	// declare service
-	repoRegistry := domain.ServiceRegistry{}
-	classService := service.NewClassService(classRepository, repoRegistry)
-	classSubjectService := service.NewClassSubjectService(classSubjectRepository, repoRegistry)
-	studentClassService := service.NewStudentClassService(studentClassRepository, repoRegistry)
-	repoRegistry.ClassServ = classService
-	repoRegistry.StudentClassService = studentClassService
-	repoRegistry.ClassSubjectServ = classSubjectService
+	var classService domain.ClassService
+	var classSubjectService domain.ClassSubjectService
+	var studentClassService domain.StudentClassService
+
+	repoRegistry := domain.ServiceRegistry{
+		ClassServ: classService,
+		StudentClassService: studentClassService,
+		ClassSubjectServ: classSubjectService,
+	}
+	classService = service.NewClassService(classRepository, repoRegistry)
+	classSubjectService = service.NewClassSubjectService(classSubjectRepository, repoRegistry)
+	studentClassService = service.NewStudentClassService(studentClassRepository, classService)
 	// declare view
 	classView := view.NewClassView(classService)
 	classSubjectView := view.NewClassSubjectView(classSubjectService)

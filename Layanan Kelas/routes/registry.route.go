@@ -7,8 +7,8 @@ import (
 
 func RegisterAllRoutes(router *echo.Echo, viewRegistry domain.ViewRegistry) {
 	// groups
-	classGroup := router.Group("/class")
-	studentClassGroup := router.Group("/student-class")
+	classGroup := router.Group("/classes")
+	studentClassGroup := router.Group("/student-classes")
 	classSubjectGroup := router.Group("/class-subject")
 	// register
 	registerClassRoute(classGroup, viewRegistry.ClassVw)

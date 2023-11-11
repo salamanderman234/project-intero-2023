@@ -9,13 +9,13 @@ import (
 
 type studentClassService struct {
 	studentClassRepo domain.StudentClassRepository
-	serviceRegistry domain.ServiceRegistry
+	classService domain.ClassService
 }
 
-func NewStudentClassService(r domain.StudentClassRepository, sr domain.ServiceRegistry) domain.StudentClassService {
+func NewStudentClassService(r domain.StudentClassRepository, sr domain.ClassService) domain.StudentClassService {
 	return &studentClassService{
 		studentClassRepo: r,
-		serviceRegistry: sr,
+		classService: sr,
 	}
 }
 
@@ -24,13 +24,14 @@ func (s *studentClassService) AssignStudent(ctx context.Context, assignForm doma
 		return 0, 0, errs
 	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.ClassID)
-	if err != nil {
-		return 0, 0, domain.ErrForeignKeyViolated
+	results, _ := s.GetStudentClassList(ctx ,assignForm.StudentID,assignForm.ClassID, assignForm.Year)
+	if len(results) > 0 {
+		return 0,0,domain.ErrDuplicateEnties
 	}
 	data := domain.StudentClassModel{
-		StudentID: assignForm.StudentID,
-		ClassID: assignForm.ClassID,
+		StudentID: &assignForm.StudentID,
+		ClassID: &assignForm.ClassID,
+		Year: &assignForm.Year,
 	}
 	created, err := s.studentClassRepo.Create(ctx, data)
 	if err != nil {
@@ -43,30 +44,32 @@ func (s *studentClassService) UnasssignStudent(ctx context.Context, assignForm d
 		return false, errs
 	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	_, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *assignForm.ClassID)
-	if err != nil {
-		return false, domain.ErrForeignKeyViolated
-	}
-	_, err = s.studentClassRepo.Delete(ctx, *assignForm.ClassID, *assignForm.StudentID)
+	_, err := s.studentClassRepo.Delete(ctx, assignForm.ClassID, assignForm.StudentID, assignForm.Year)
 	if err != nil {
 		return false, err
 	}	
 	return true, nil
 }
 
-func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId uint) ([]domain.ClassEntity, error) {
+func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId uint, classId uint, year uint) ([]domain.StudentClassEntity, error) {
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	var resultsClass []domain.ClassEntity
-	results, err := s.studentClassRepo.Read(ctx, 0, studentId)
+	var resultsClass []domain.StudentClassEntity
+	results, err := s.studentClassRepo.Read(ctx, classId, studentId, year)
 	if err != nil {
 		return nil, err
 	}
 	for _, result := range results {
-		class, err := s.serviceRegistry.ClassServ.GetClassInfo(ctx, *result.ClassID)
+		temp := domain.StudentClassEntity{}
+		err := helper.Convert(result, &temp)
+		if err != nil {
+			return nil, domain.ErrConversionType
+		}
+		class, err := s.classService.GetClassInfo(ctx, *result.ClassID)
 		if err != nil {
 			return nil, err
 		}
-		resultsClass = append(resultsClass, class)
+		temp.Class = class
+		resultsClass = append(resultsClass, temp)
 	}
 	return resultsClass, nil
 }

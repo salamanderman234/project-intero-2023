@@ -6,7 +6,7 @@ import (
 )
 
 func registerStudentClassRoute(group *echo.Group, studentClassView domain.StudentClassView) {
-	group.POST("/assign_student/", studentClassView.AssignStudentToAClass)
-	group.POST("/unassign_student/", studentClassView.UnsignStudentFromAClass)
-	group.GET("/student_class_list/", studentClassView.GetStudentClassList)
+	group.POST("/assign/", studentClassView.AssignStudentToAClass)
+	group.POST("/unassign/", studentClassView.UnsignStudentFromAClass)
+	group.GET("/", studentClassView.GetStudentClassList)
 }
