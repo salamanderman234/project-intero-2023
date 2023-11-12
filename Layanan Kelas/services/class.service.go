@@ -58,7 +58,17 @@ func (c *classService) GetClassList(ctx context.Context, query string, page uint
 		}
 		results = append(results, temp)
 	}
-	pagination = domain.CreatePagination(page, maxPage, query)
+	paginationQueries := map[string]any{}
+	if query != "" {
+		paginationQueries["q"] =  query
+	} 
+	if orderBy != "" {
+		paginationQueries["order_by"] = orderBy
+	}
+	if orderWith != "" {
+		paginationQueries["order"] = orderWith
+	}
+	pagination = domain.CreatePagination(page, maxPage, paginationQueries)
 	return results, pagination, nil
 }
 func (c *classService) GetClassInfo(ctx context.Context, id uint) (domain.ClassEntity, error) {

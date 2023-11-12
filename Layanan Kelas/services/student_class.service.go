@@ -65,11 +65,10 @@ func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId
 			return nil, domain.ErrConversionType
 		}
 		class, err := s.classService.GetClassInfo(ctx, *result.ClassID)
-		if err != nil {
-			return nil, err
+		if err == nil {
+			temp.Class = class
+			resultsClass = append(resultsClass, temp)
 		}
-		temp.Class = class
-		resultsClass = append(resultsClass, temp)
 	}
 	return resultsClass, nil
 }

@@ -74,20 +74,23 @@ func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findF
 
 	if id != 0 {
 		datas, err = findFunc(id)
+		if err != nil {
+			respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
+			return respStatusCode, resp
+		}
 		resp.Datas = map[string]any{
 			"data": datas,
 		}
 	} else {
 		datas, pagination, err = searchFunc(query, page, orderBy, order)
+		if err != nil {
+			respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
+			return respStatusCode, resp
+		}
 		resp.Datas = map[string]any {
 			"pagination" : pagination,
 			"datas" : datas,
 		}
-	}
-
-	if err != nil {
-		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
-		return respStatusCode, resp
 	}
 	return respStatusCode, resp
 }
@@ -132,7 +135,7 @@ func basicUpdateView(c echo.Context, fun updateViewServiceCallFunc, form domain.
 		return respStatusCode, resp
 	}
 	resp.Datas = map[string]any{
-		"class_id" : id,
+		"id" : id,
 		"updated_data" : data,
 		"rows_affected": aff,
 	}

@@ -8,6 +8,6 @@ import (
 func registerClassSubjectRoute(group *echo.Group, classView domain.ClassSubjectView) {
 	group.POST("/", classView.Create)
 	group.GET("/", classView.Get)
-	group.PUT("/", classView.Update)
+	group.PATCH("/", classView.Update)
 	group.DELETE("/", classView.Delete)
 }

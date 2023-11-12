@@ -9,6 +9,7 @@ import (
 
 func handleRepositoryError(result *gorm.DB) error {
 	err := result.Error
+	// fmt.Println(err)
 	if errors.Is(err, gorm.ErrDuplicatedKey) {
 		return domain.ErrDuplicateEnties
 	}

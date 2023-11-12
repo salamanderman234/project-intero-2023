@@ -36,7 +36,7 @@ func main() {
 		ClassSubjectServ: classSubjectService,
 	}
 	classService = service.NewClassService(classRepository, repoRegistry)
-	classSubjectService = service.NewClassSubjectService(classSubjectRepository, repoRegistry)
+	classSubjectService = service.NewClassSubjectService(classSubjectRepository, classService)
 	studentClassService = service.NewStudentClassService(studentClassRepository, classService)
 	// declare view
 	classView := view.NewClassView(classService)

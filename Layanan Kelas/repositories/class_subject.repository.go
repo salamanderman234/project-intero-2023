@@ -23,14 +23,16 @@ func (cs *classSubjectRepository) Create(c context.Context, data domain.ClassSub
 	return data, err
 }
 
-func (cs *classSubjectRepository) Read(c context.Context, page uint, studentID uint, teacherID uint, classID uint, year uint, orderBy string, orderWith string) ([]domain.ClassSubjectModel, uint, error) {
+func (cs *classSubjectRepository) Read(c context.Context, id uint, studentID uint, teacherID uint, classID uint, year uint, page uint, orderBy string, orderWith string) ([]domain.ClassSubjectModel, uint, error) {
 	var results []domain.ClassSubjectModel
 	var maxPage int64
-	queryDB := cs.db.Scopes(orderScope(domain.ClassSubjectModel{}, orderBy, orderWith)).Scopes(paginateScope(page)).Model(&domain.ClassSubjectModel{}).WithContext(c)
+	queryDB := cs.db.Scopes(orderScope(domain.ClassSubjectModel{}, orderBy, orderWith)).Model(&domain.ClassSubjectModel{}).WithContext(c)
 	if year != 0 && studentID == 0{
-		queryDB.Where("year = ?", year)
+		queryDB = queryDB.Where("year = ?", year)
 	}
-	if studentID != 0 {
+	if id != 0{
+		queryDB = queryDB.Where("id = ?", id)
+	}else if studentID != 0 {
 		var studentClasses []domain.StudentClassModel
 		cs.db.Model(&domain.StudentClassModel{}).
 			WithContext(c).
@@ -44,11 +46,15 @@ func (cs *classSubjectRepository) Read(c context.Context, page uint, studentID u
 		}
 
 	} else if teacherID != 0{
-		queryDB.Where("teacher_id = ?", teacherID)
+		queryDB = queryDB.Where("teacher_id = ?", teacherID)
 	} else if classID != 0 {
-		queryDB.Where("class_id = ?", teacherID)
+		queryDB = queryDB.Where("class_id = ?", classID)
 	}
-	result := queryDB.Find(&results)
+	_ = *queryDB.Count(&maxPage)
+	result := queryDB.Scopes(paginateScope(page)).Find(&results)
+	if result.RowsAffected <= 0 {
+		return results,0, domain.ErrResourceNotFound
+	}
 	maxPage = int64(math.Ceil(float64(maxPage)/DATA_PERPAGE))
 	return results, uint(maxPage), handleRepositoryError(result)
 }
