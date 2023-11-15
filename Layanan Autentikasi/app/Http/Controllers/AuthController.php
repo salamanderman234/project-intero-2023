@@ -14,10 +14,10 @@ class AuthController extends Controller
      *
      * @return void
      */
-    public function __construct()
-    {
-        $this->middleware('auth:api', ['except' => ['login','register']]);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:api', ['except' => ['login','register']]);
+    // }
 
     public function register()
     {
@@ -29,7 +29,7 @@ class AuthController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->message());
+            return response()->json(['error' => $validator->errors()], 422);
         }
 
         $user = User::create([
@@ -68,7 +68,11 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = auth()->user();
+        if (empty($user)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+        return response()->json($user);
     }
 
     /**
