@@ -20,3 +20,6 @@ Route::get('/teacher', [ProfileController::class, 'getTeacherInfo']);
 
 Route::put('/siswa', [ProfileController::class, 'updateSiswa']);
 Route::put('/teacher', [ProfileController::class, 'updateTeacher']);
+
+Route::post('/siswa', [ProfileController::class, 'createSiswa']);
+Route::post('/teacher', [ProfileController::class, 'createGuru']);
