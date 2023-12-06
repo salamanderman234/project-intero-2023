@@ -17,18 +17,15 @@ class KonsentrasiController extends Controller
         $focusData = Focus::all();
 
         if ($focusData->isEmpty()) {
-            return response()->json(['message' => 'Tidak ada data Focus yang tersedia'], 404);
+            return response()->json([
+                'message' => 'Data record not found'
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'Data retrieved successfully',
+                'data' => $focusData
+            ], 200);
         }
-
-        return $focusData;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -44,7 +41,9 @@ class KonsentrasiController extends Controller
             ]);
         } catch (ValidationException $e) {
             // Jika validasi gagal, kembalikan respons JSON dengan pesan kesalahan validasi
-            return response()->json(['message' => $e->errors()], 422);
+            return response()->json([
+                'message' => $e->errors()
+            ], 422);
         }
 
         // Mencoba membuat objek Focus dengan data yang sudah divalidasi
