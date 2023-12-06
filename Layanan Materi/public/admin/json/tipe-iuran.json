@@ -1,0 +1,35 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "nama_iuran": "Patis",
+        "deskripsi": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec quis ex luctus, posuere neque vitae, posuere mauris. Vestibulum varius sapien quam, quis congue tellus auctor eu. Maecenas libero quam, mattis vitae feugiat ut, laoreet vel risus. Sed at interdum ex. Curabitur laoreet ultricies sem.",
+        "iuran_syarat": [
+          {
+            "id_syarat": 1,
+            "nama_syarat": "Umur",
+            "operasi": "<=",
+            "numbers": "70"
+          },
+          {
+            "id_syarat": 2,
+            "nama_syarat": "Penduduk Asli",
+            "operasi": "=",
+            "numbers": "0"
+          },
+          {
+            "id_syarat": 3,
+            "nama_syarat": "Penduduk Keluar",
+            "operasi": "=",
+            "numbers": "1"
+          },
+          {
+            "id_syarat": 5,
+            "nama_syarat": "Menikah",
+            "operasi": "=",
+            "numbers": "1"
+          }
+        ]
+      }
+    ]
+}

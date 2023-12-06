@@ -1,0 +1,43 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "penduduk": [
+            {"nama": "Jhone Doe"
+            }
+        ],
+        "nik": "5091239384124520",
+        "email": "gslixby0@abc.net.au",
+        "no_telepon": "08123456789",
+        "alamat_rumah": "Jl. Disini Saja",
+        "role": "SuperAdmin",
+        "avatar": ""
+      },
+      {
+        "id": 1,
+        "penduduk": [
+            {"nama": "Jhone Doe"
+            }
+        ],
+        "nik": "5091239384124520",
+        "email": "gslixby0@abc.net.au",
+        "no_telepon": "08123456789",
+        "alamat_rumah": "Jl. Disini Saja",
+        "role": "Admin",
+        "avatar": ""
+      },
+      {
+        "id": 1,
+        "penduduk": [
+            {"nama": "Jhone Doe"
+            }
+        ],
+        "nik": "5091239384124520",
+        "email": "gslixby0@abc.net.au",
+        "no_telepon": "08123456789",
+        "alamat_rumah": "Jl. Disini Saja",
+        "role": "User",
+        "avatar": ""
+      }
+    ]
+}
