@@ -16,18 +16,15 @@ class SubjectController extends Controller
         $subjectData = Subject::all();
 
         if ($subjectData->isEmpty()) {
-            return response()->json(['message' => 'Tidak ada data Materi yang tersedia'], 404);
+            return response()->json([
+                'message' => 'Data record not found'
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'Data retrieved successfully',
+                'data' => $subjectData
+            ], 200);
         }
-
-        return $subjectData;
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -43,18 +40,27 @@ class SubjectController extends Controller
                 'description' => 'required|string|max:255',
                 'minimum_avarage_value' => 'required|numeric|min:0|max:100'
             ]);
+        } catch (ValidationException $e) {
+            // Jika validasi gagal, kembalikan respons JSON dengan pesan kesalahan validasi
+            return response()->json([
+                'message' => $e->errors()
+            ], 422);
+        }
 
+        try {
             // Mencoba membuat objek Subject dengan data yang sudah divalidasi
             $subject = Subject::create($validatedData);
 
             // Jika berhasil disimpan
-            return response()->json(['message' => 'Data berhasil disimpan'], 201);
-        } catch (ValidationException $e) {
-            // Jika validasi tidak sesuai, kembalikan pesan validasi yang tidak sesuai
-            return response()->json(['message' => 'Gagal menyimpan data', 'errors' => $e->validator->errors()], 422);
+            return response()->json([
+                'message' => 'Data stored successfully',
+                'data' => $subject
+            ], 201);
         } catch (\Exception $e) {
             // Jika gagal disimpan
-            return response()->json(['message' => 'Gagal menyimpan data'], 500);
+            return response()->json([
+                'message' => 'Data failed to stored'
+            ], 500);
         }
     }
 
@@ -68,19 +74,15 @@ class SubjectController extends Controller
 
         // Validasi apakah data ditemukan
         if (!$subject) {
-            return response()->json(['message' => 'Data tidak ditemukan'], 404);
+            return response()->json([
+                'message' => 'Data record not found'
+            ], 404);
+        } else {
+            return response()->json([
+                'message' => 'Data retrieved successfully',
+                'data' => $subject
+            ], 200);
         }
-
-        // Jika data ditemukan, kembalikan sebagai respons
-        return $subject;
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
     }
 
     /**
@@ -88,7 +90,44 @@ class SubjectController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            // Validasi input dari user
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'curriculum' => 'required|string',
+                'description' => 'required|string|max:255',
+                'minimum_avarage_value' => 'required|numeric|min:0|max:100'
+            ]);
+        } catch (ValidationException $e) {
+            // Jika validasi gagal, kembalikan respons JSON dengan pesan kesalahan validasi
+            return response()->json([
+                'message' => $e->errors()
+            ], 422);
+        }
+
+        // Mencari data Focus berdasarkan ID
+        $subject = Subject::find($id);
+
+        // Validasi apakah data ditemukan
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Data record not found'
+            ], 404);
+        }
+
+        // Mencoba melakukan update data
+        try {
+            $subject->update($validatedData);
+            return response()->json([
+                'message' => 'Data record updated succesfuly',
+                'data' => $subject
+            ], 200);
+        } catch (\Exception $e) {
+            // Jika gagal diupdate
+            return response()->json([
+                'message' => 'Failed to update data'
+            ], 500);
+        }
     }
 
     /**
@@ -96,6 +135,29 @@ class SubjectController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // Mencari data Focus berdasarkan ID
+        $subject = Subject::find($id);
+
+        // Validasi apakah data ditemukan
+        if (!$subject) {
+            return response()->json([
+                'message' => 'Data record not found'
+            ], 404);
+        }
+
+        // Mencoba menghapus data
+        try {
+            $subject->delete();
+
+            // Jika berhasil dihapus
+            return response()->json([
+                'message' => 'Data record succesfuly deleted'
+            ], 200);
+        } catch (\Exception $e) {
+            // Jika gagal dihapus
+            return response()->json([
+                'message' => 'Failed to delete data'
+            ], 500);
+        }
     }
 }
