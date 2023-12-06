@@ -9,13 +9,13 @@ import (
 )
 
 type classService struct {
-	classRepo domain.ClassRepository
+	classRepo   domain.ClassRepository
 	serviceList domain.ServiceRegistry
 }
 
 func NewClassService(r domain.ClassRepository, s domain.ServiceRegistry) domain.ClassService {
 	return &classService{
-		classRepo: r,
+		classRepo:   r,
 		serviceList: s,
 	}
 }
@@ -43,9 +43,10 @@ func (c *classService) CreateClass(ctx context.Context, data domain.ClassCreateF
 	}
 	return result, nil
 }
-func (c *classService) GetClassList(ctx context.Context, query string, page uint,orderBy string, orderWith string) ([]domain.ClassEntity, domain.Pagination, error) {
+func (c *classService) GetClassList(ctx context.Context, query string, page uint, orderBy string, orderWith string) ([]domain.ClassEntity, domain.Pagination, error) {
 	var results []domain.ClassEntity
 	pagination := domain.Pagination{}
+	page = uint(math.Max(float64(1), float64(page)))
 	resultsRepos, maxPage, err := c.classRepo.Read(ctx, query, 0, uint(math.Max(float64(page), 1)), orderBy, orderWith)
 	if err != nil {
 		return results, pagination, err
@@ -60,8 +61,8 @@ func (c *classService) GetClassList(ctx context.Context, query string, page uint
 	}
 	paginationQueries := map[string]any{}
 	if query != "" {
-		paginationQueries["q"] =  query
-	} 
+		paginationQueries["q"] = query
+	}
 	if orderBy != "" {
 		paginationQueries["order_by"] = orderBy
 	}
@@ -73,7 +74,7 @@ func (c *classService) GetClassList(ctx context.Context, query string, page uint
 }
 func (c *classService) GetClassInfo(ctx context.Context, id uint) (domain.ClassEntity, error) {
 	var result domain.ClassEntity
-	resultRepo, _ ,err := c.classRepo.Read(ctx, "", id, 1, "", "")
+	resultRepo, _, err := c.classRepo.Read(ctx, "", id, 1, "", "")
 	if err != nil {
 		return result, err
 	}
