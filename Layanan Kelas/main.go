@@ -31,9 +31,9 @@ func main() {
 	var studentClassService domain.StudentClassService
 
 	repoRegistry := domain.ServiceRegistry{
-		ClassServ: classService,
+		ClassServ:           classService,
 		StudentClassService: studentClassService,
-		ClassSubjectServ: classSubjectService,
+		ClassSubjectServ:    classSubjectService,
 	}
 	classService = service.NewClassService(classRepository, repoRegistry)
 	classSubjectService = service.NewClassSubjectService(classSubjectRepository, classService)
@@ -43,11 +43,11 @@ func main() {
 	classSubjectView := view.NewClassSubjectView(classSubjectService)
 	studentClassView := view.NewStudentClassView(studentClassService)
 	viewRegistry := domain.ViewRegistry{
-		ClassVw: classView,
+		ClassVw:        classView,
 		ClassSubjectVw: classSubjectView,
 		StudentClassVw: studentClassView,
 	}
 	// register route
 	route.RegisterAllRoutes(router, viewRegistry)
-	router.Logger.Fatal(router.Start(":1323"))
+	router.Logger.Fatal(router.Start(":8080"))
 }

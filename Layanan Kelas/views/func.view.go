@@ -9,13 +9,13 @@ import (
 )
 
 type createViewServiceCallFunc func(createdForm domain.Form) (any, error)
-type customBindFunc func() ([]error)
+type customBindFunc func() []error
 
 func basicCreateView(c echo.Context, fun createViewServiceCallFunc, form domain.Form, customBinds ...customBindFunc) (int, domain.BasicResponse) {
 	respStatusCode := http.StatusCreated
 	resp := domain.BasicResponse{
 		Message: "success",
-		Datas:   nil,
+		Data:    nil,
 		Errors:  nil,
 	}
 	if len(customBinds) == 1 {
@@ -24,7 +24,7 @@ func basicCreateView(c echo.Context, fun createViewServiceCallFunc, form domain.
 			resp.Errors = helper.GenerateBindingErrorDetail(errs)
 			return http.StatusBadRequest, resp
 		}
-	}else if err := c.Bind(form); err != nil {
+	} else if err := c.Bind(form); err != nil {
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return respStatusCode, resp
 	}
@@ -33,7 +33,7 @@ func basicCreateView(c echo.Context, fun createViewServiceCallFunc, form domain.
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return respStatusCode, resp
 	}
-	resp.Datas = map[string]any{
+	resp.Data = map[string]any{
 		"created_data": created,
 	}
 	return respStatusCode, resp
@@ -46,16 +46,16 @@ func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findF
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
 		Message: "ok",
-		Datas: nil,	
-		Errors: nil,
+		Data:    nil,
+		Errors:  nil,
 	}
-	
+
 	var page uint
 	var query string
 	var id uint
 	var orderBy string
 	var order string
-	
+
 	if errs := echo.QueryParamsBinder(c).
 		Uint("page", &page).
 		Uint("id", &id).
@@ -78,30 +78,29 @@ func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findF
 			respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 			return respStatusCode, resp
 		}
-		resp.Datas = map[string]any{
-			"data": datas,
-		}
+		resp.Data = datas
 	} else {
 		datas, pagination, err = searchFunc(query, page, orderBy, order)
 		if err != nil {
 			respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 			return respStatusCode, resp
 		}
-		resp.Datas = map[string]any {
-			"pagination" : pagination,
-			"datas" : datas,
+		resp.Data = map[string]any{
+			"pagination": pagination,
+			"results":    datas,
 		}
 	}
 	return respStatusCode, resp
 }
 
 type updateViewServiceCallFunc func(id uint, updateForm domain.Form) (int, any, error)
+
 func basicUpdateView(c echo.Context, fun updateViewServiceCallFunc, form domain.Form, customBinds ...customBindFunc) (int, domain.BasicResponse) {
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
 		Message: "success",
-		Datas: nil,
-		Errors: nil,
+		Data:    nil,
+		Errors:  nil,
 	}
 	if len(customBinds) == 1 {
 		if errs := customBinds[0](); len(errs) > 0 {
@@ -109,7 +108,7 @@ func basicUpdateView(c echo.Context, fun updateViewServiceCallFunc, form domain.
 			resp.Errors = helper.GenerateBindingErrorDetail(errs)
 			return http.StatusBadRequest, resp
 		}
-	}else if err := c.Bind(form); err != nil {
+	} else if err := c.Bind(form); err != nil {
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return respStatusCode, resp
 	}
@@ -125,7 +124,7 @@ func basicUpdateView(c echo.Context, fun updateViewServiceCallFunc, form domain.
 		respStatusCode = http.StatusBadRequest
 		resp.Message = "request error"
 		resp.Errors = []domain.ErrorDetail{
-			{Field: "id",Type: "required", Message: "id field is required"},
+			{Field: "id", Type: "required", Message: "id field is required"},
 		}
 		return respStatusCode, resp
 	}
@@ -134,21 +133,22 @@ func basicUpdateView(c echo.Context, fun updateViewServiceCallFunc, form domain.
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return respStatusCode, resp
 	}
-	resp.Datas = map[string]any{
-		"id" : id,
-		"updated_data" : data,
+	resp.Data = map[string]any{
+		"id":            id,
+		"updated_data":  data,
 		"rows_affected": aff,
 	}
 	return respStatusCode, resp
 }
 
-type deleteViewServiceCallFunc func(id uint) (error)
-func basicDeleteView(c echo.Context, deleteFunc deleteViewServiceCallFunc) (int, domain.BasicResponse){
+type deleteViewServiceCallFunc func(id uint) error
+
+func basicDeleteView(c echo.Context, deleteFunc deleteViewServiceCallFunc) (int, domain.BasicResponse) {
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
 		Message: "success",
-		Datas: nil,
-		Errors: nil,
+		Data:    nil,
+		Errors:  nil,
 	}
 	var id uint
 	if errs := echo.QueryParamsBinder(c).
@@ -162,7 +162,7 @@ func basicDeleteView(c echo.Context, deleteFunc deleteViewServiceCallFunc) (int,
 		respStatusCode = http.StatusBadRequest
 		resp.Message = "request error"
 		resp.Errors = []domain.ErrorDetail{
-			{Field: "id",Type: "required", Message: "id field is required"},
+			{Field: "id", Type: "required", Message: "id field is required"},
 		}
 		return respStatusCode, resp
 	}
@@ -171,7 +171,7 @@ func basicDeleteView(c echo.Context, deleteFunc deleteViewServiceCallFunc) (int,
 		respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 		return respStatusCode, resp
 	}
-	resp.Datas = map[string]any{
+	resp.Data = map[string]any{
 		"deleted_id": id,
 	}
 	return respStatusCode, resp

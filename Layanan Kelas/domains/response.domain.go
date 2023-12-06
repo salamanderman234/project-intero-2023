@@ -2,7 +2,7 @@ package domain
 
 type BasicResponse struct {
 	Message string        `json:"message"`
-	Datas   any           `json:"detail,omitempty"`
+	Data    any           `json:"data,omitempty"`
 	Errors  []ErrorDetail `json:"errors,omitempty"`
 }
 

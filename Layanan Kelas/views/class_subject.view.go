@@ -13,7 +13,7 @@ type classSubjectView struct {
 }
 
 func NewClassSubjectView(s domain.ClassSubjectService) domain.ClassSubjectView {
-	return &classSubjectView {
+	return &classSubjectView{
 		service: s,
 	}
 }
@@ -21,10 +21,10 @@ func NewClassSubjectView(s domain.ClassSubjectService) domain.ClassSubjectView {
 func (cs *classSubjectView) Create(c echo.Context) error {
 	requestContext := c.Request().Context()
 	form := domain.ClassSubjectCreateForm{}
-	fun := func (createdForm domain.Form) (any, error) {
+	fun := func(createdForm domain.Form) (any, error) {
 		return cs.service.CreateClassSubject(requestContext, *createdForm.(*domain.ClassSubjectCreateForm))
 	}
-	bindFunc := func () ([]error) {
+	bindFunc := func() []error {
 		return echo.FormFieldBinder(c).
 			Uint("class_id", &form.ClassID).
 			Uint("subject_id", &form.SubjectID).
@@ -40,10 +40,10 @@ func (cs *classSubjectView) Get(c echo.Context) error {
 	respStatusCode := http.StatusOK
 	resp := domain.BasicResponse{
 		Message: "ok",
-		Datas: nil,
-		Errors: nil,
+		Data:    nil,
+		Errors:  nil,
 	}
-	
+
 	var id uint
 	var studentID uint
 	var classID uint
@@ -52,7 +52,7 @@ func (cs *classSubjectView) Get(c echo.Context) error {
 	var page uint
 	var sortBy string
 	var sort string
-	if 	errs := echo.QueryParamsBinder(c).
+	if errs := echo.QueryParamsBinder(c).
 		Uint("class_id", &classID).
 		Uint("id", &id).
 		Uint("student_id", &studentID).
@@ -62,7 +62,7 @@ func (cs *classSubjectView) Get(c echo.Context) error {
 		String("order_by", &sortBy).
 		String("order", &sort).
 		BindErrors(); len(errs) > 0 {
-		
+
 		resp.Message = "request error"
 		resp.Errors = helper.GenerateBindingErrorDetail(errs)
 		return c.JSON(http.StatusBadRequest, resp)
@@ -74,28 +74,26 @@ func (cs *classSubjectView) Get(c echo.Context) error {
 		return c.JSON(respStatusCode, resp)
 	}
 	if id != 0 {
-		resp.Datas = map[string]any{
-			"data" : results[0],
-		}	
-	}else {
-		resp.Datas = map[string]any{
-			"datas" : results,
-			"length" : len(results),
+		resp.Data = results[0]
+	} else {
+		resp.Data = map[string]any{
+			"results":    results,
+			"length":     len(results),
 			"pagination": pagination,
 		}
 	}
-	
+
 	return c.JSON(respStatusCode, resp)
 }
 func (cs *classSubjectView) Update(c echo.Context) error {
 	requestContext := c.Request().Context()
 	form := domain.ClassSubjectUpdateForm{}
-	servFunc := func (id uint, updateForm domain.Form) (int, any, error) {
+	servFunc := func(id uint, updateForm domain.Form) (int, any, error) {
 		data := updateForm.(*domain.ClassSubjectUpdateForm)
 		aff, result, err := cs.service.UpdateClassSubject(requestContext, id, *data)
 		return int(aff), result, err
 	}
-	bindFunc := func () ([]error) {
+	bindFunc := func() []error {
 		return echo.FormFieldBinder(c).
 			Uint("subject_id", &form.SubjectID).
 			Uint("teacher_id", &form.TeacherID).
@@ -107,7 +105,7 @@ func (cs *classSubjectView) Update(c echo.Context) error {
 }
 func (cs *classSubjectView) Delete(c echo.Context) error {
 	requestContext := c.Request().Context()
-	deleteFunc := func(id uint) (error){
+	deleteFunc := func(id uint) error {
 		err := cs.service.DeleteClassSubject(requestContext, id)
 		return err
 	}
