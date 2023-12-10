@@ -1,0 +1,34 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "nama_syarat": "Umur",
+        "operasi": "<=",
+        "numbers": "70"
+      },
+      {
+        "id": 2,
+        "nama_syarat": "Penduduk Asli",
+        "operasi": "=",
+        "numbers": "0"
+      },
+      {
+        "id": 3,
+        "nama_syarat": "Penduduk Keluar",
+        "operasi": "=",
+        "numbers": "1"
+      },
+      {
+        "id": 4,
+        "nama_syarat": "Penduduk Masuk",
+        "operasi": "=",
+        "numbers": "2"
+      },
+      {
+        "id": 5,
+        "nama_syarat": "Menikah",
+        "operasi": "=",
+        "numbers": "1"
+      }
+    ]
+}
