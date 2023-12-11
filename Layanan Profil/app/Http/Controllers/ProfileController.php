@@ -9,16 +9,100 @@ use Illuminate\Support\Str;
 use App\Models\Student;
 use App\Models\Teacher;
 use App\Models\Subject;
+use App\Models\User;
+use App\Http\Requests\UpdateStudentRequest;
 
 class ProfileController extends Controller
 {
+    // revisi
+    public function updateSiswaProfile(Request $request, Student $student) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            //'student_number' => 'required', (student number cant be edited)
+            'place_of_birth' => 'required',
+            'date_of_birth' => 'required',
+            'address' => 'required',
+            'no_handphone' => 'required',
+        ], [
+            'name.required' => 'Your name is required',
+            'place_of_birth.required' => 'Your place of birth is required',
+            'date_of_birth.required' => 'Your date of birth is required',
+            'address.required' => 'Your address is required',
+            'no_handphone.required' => 'Your phone number is required',
+        ]);
+
+        $errorResponse = [
+            "error" => $validator->errors(),
+        ];
+        if ($validator->fails()) {
+            return response()->json($errorResponse, 400);
+        }
+        $student->update($request->all());
+        return response()->json([
+            "message" => "ok",
+        ],200);
+    }
+    public function profileSiswa(Student $student) {
+        return response()->json([
+            'message' => 'Data retrieved successfully',
+            'data' => $student,
+        ], 200);
+    }
+    public function profileGuru(Teacher $teacher) {
+        return response()->json([
+            'message' => 'Data retrieved successfully',
+            'data' => $teacher,
+        ], 200);
+    }
+    public function getProfile(Request $request, User $user) {
+        $profile = $user->profile;
+        return response()->json([
+            'message' => 'Data retrieved successfully',
+            'data' => $profile,
+        ], 200);
+    }
+
+    private function getDatas($datas) {
+        $result = json_decode($datas);
+        $siswas = $result->data;
+        if(count($siswas) == 0) {
+            return response()->json(["message" => "not found"], 404);
+        } 
+        $current = $result->current_page;
+        $total = ceil($result->total/5);
+        $pagination = [
+            "current_page" => $result->current_page,
+            "previous_page" => max($current - 1, 1),
+            "next_page" => min($current + 1, $total),
+            "max_page" => $total,
+        ];
+        return response()->json([
+            'message' => 'Data retrieved successfully',
+            'data' => ["results" => $siswas, "pagination" => $pagination],
+        ], 200);
+    }
+
+    public function getSiswas(Request $request) {
+        $result = Student::with('user')->paginate(5)->toJson();
+        return $this->getDatas($result);
+    }
+    public function getGurus(Request $request) {
+        $result = Teacher::with('user')->paginate(5)->toJson();
+        return $this->getDatas($result);
+    }
+    public function getAdmins(Request $request) {
+        $result = Admin::with('user')->paginate(5)->toJson();
+        return $this->getDatas($result);
+    }
+    // akhir dari revisi
+
     public function getSiswaInfo(Request $request)
     {
         // Get the current login siswa
         // $user = Auth::user();
 
         // For testing
-        $user = \App\Models\User::find(2);
+        $user = \App\Models\User::find(1);
 
         if ($user) {
             // Get the associated student record
@@ -135,7 +219,7 @@ class ProfileController extends Controller
                 ];
 
                 if ($validator->fails()) {
-                    return response()->json([$errorResponse], 400);
+                    return response()->json($errorResponse, 400);
                 } else {
                     $student->name = $request->input('name');
                     $student->place_of_birth = $request->input('place_of_birth');
@@ -230,61 +314,57 @@ class ProfileController extends Controller
         // $user = Auth::User();
 
         // for testing only
-        $user = \App\Models\User::find(2);
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'place_of_birth' => 'required',
+            'date_of_birth' => 'required',
+            'address' => 'required',
+            'no_handphone' => 'required',
+            "user_id" => "required|numeric"
+        ], [
+            'name.required' => 'Your name is required',
+            'place_of_birth.required' => 'Your place of birth is required',
+            'date_of_birth.required' => 'Your date of birth is required',
+            'address.required' => 'Your address is required',
+            'no_handphone.required' => 'Your phone number is required',
+            'user_id.required' => 'user is required',
+        ]);
 
-        if($user) {
-            $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'place_of_birth' => 'required',
-                'date_of_birth' => 'required',
-                'address' => 'required',
-                'no_handphone' => 'required',
-                'profile_pic' => 'required',
-            ], [
-                'name.required' => 'Your name is required',
-                'place_of_birth.required' => 'Your place of birth is required',
-                'date_of_birth.required' => 'Your date of birth is required',
-                'address.required' => 'Your address is required',
-                'no_handphone.required' => 'Your phone number is required',
-                'profile_pic.required' => 'Your profile picture is required',
-            ]);
+        $errorResponse = [
+            "error" => $validator->errors(),
+        ];
 
-            $errorResponse = [
-                "error" => $validator->errors(),
-            ];
+        $successResponse = [
+            "message" => "Your profile was created"
+        ];
 
-            $successResponse = [
-                "message" => "Your profile was created"
-            ];
+        if ($validator->fails()) {
+            return response()->json([$errorResponse], 400);
+        } else {
 
-            if ($validator->fails()) {
-                return response()->json([$errorResponse], 400);
-            } else {
-
-                // if user already has a profile
-                if (Student::where('user_id', $user->id)->exists()) {
-                    return response()->json(['error' => 'User already has a student profile'], 400);
-                }
-                $student = new Student();
-
-                // generating random 5 number for student number and making sure its unique
-                do {
-                    $studentNumber = rand(10000, 99999);
-                } while (Student::where('student_number', $studentNumber)->exists());
-
-                $student->name = $request->input('name');
-                $student->user_id = $user->id;
-                $student->student_number = $studentNumber;
-                $student->place_of_birth = $request->input('place_of_birth');
-                $student->date_of_birth = $request->input('date_of_birth');
-                $student->address = $request->input('address');
-                $student->no_handphone = $request->input('no_handphone');
-                $student->profile_pic = $request->input('profile_pic');
-                $student->created_at = now();
-                $student->save();
-
-                return response()->json($successResponse, 200);
+            // if user already has a profile
+            if (Student::where('user_id', $request->input('user_id'))->exists()) {
+                return response()->json(['error' => 'User already has a student profile'], 400);
             }
+            $student = new Student();
+
+            // generating random 5 number for student number and making sure its unique
+            do {
+                $studentNumber = rand(10000, 99999);
+            } while (Student::where('student_number', $studentNumber)->exists());
+
+            $student->name = $request->input('name');
+            $student->user_id = $request->input('user_id');
+            $student->student_number = $studentNumber;
+            $student->place_of_birth = $request->input('place_of_birth');
+            $student->date_of_birth = $request->input('date_of_birth');
+            $student->address = $request->input('address');
+            $student->no_handphone = $request->input('no_handphone');
+            $student->profile_pic = $request->input('profile_pic');
+            $student->created_at = now();
+            $student->save();
+
+            return response()->json($successResponse, 200);
         }
     }
 

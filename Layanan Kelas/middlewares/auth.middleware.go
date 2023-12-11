@@ -25,6 +25,10 @@ func OnlyOperator(next echo.HandlerFunc) echo.HandlerFunc {
 		req, _ := http.NewRequest("POST", verifyAuthUrl, nil)
 		req.Header.Set("Authorization", "Bearer "+token)
 		res, _ := client.Do(req)
+		if res == nil {
+			resp.Message = "forbidden error"
+			return c.JSON(http.StatusForbidden, resp)
+		}
 		if res.StatusCode != 200 {
 			resp.Message = "forbidden error"
 			return c.JSON(http.StatusForbidden, resp)

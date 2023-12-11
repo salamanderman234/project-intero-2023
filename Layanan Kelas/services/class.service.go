@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"math"
+	"strconv"
 
+	"github.com/salamanderman234/project-intro-2023/layanan-kelas/config"
 	domain "github.com/salamanderman234/project-intro-2023/layanan-kelas/domains"
 	helper "github.com/salamanderman234/project-intro-2023/layanan-kelas/helpers"
 )
@@ -43,11 +45,18 @@ func (c *classService) CreateClass(ctx context.Context, data domain.ClassCreateF
 	}
 	return result, nil
 }
-func (c *classService) GetClassList(ctx context.Context, query string, page uint, orderBy string, orderWith string) ([]domain.ClassEntity, domain.Pagination, error) {
+func (c *classService) GetClassList(ctx context.Context, query string, page uint, orderBy string, orderWith string, withoutPagination bool) ([]domain.ClassEntity, domain.Pagination, error) {
 	var results []domain.ClassEntity
 	pagination := domain.Pagination{}
 	page = uint(math.Max(float64(1), float64(page)))
-	resultsRepos, maxPage, err := c.classRepo.Read(ctx, query, 0, uint(math.Max(float64(page), 1)), orderBy, orderWith)
+	var resultsRepos []domain.ClassModel
+	var maxPage uint
+	var err error
+	if withoutPagination {
+		resultsRepos, err = c.classRepo.GetAll(ctx)
+	} else {
+		resultsRepos, maxPage, err = c.classRepo.Read(ctx, query, 0, uint(math.Max(float64(page), 1)), orderBy, orderWith)
+	}
 	if err != nil {
 		return results, pagination, err
 	}
@@ -57,19 +66,31 @@ func (c *classService) GetClassList(ctx context.Context, query string, page uint
 		if err := helper.Convert(resultRepo, &temp); err != nil {
 			return results, pagination, domain.ErrConversionType
 		}
+		focusId := strconv.Itoa(int(resultRepo.FocusID))
+		focus, err := helper.CallService(config.MasterServiceHost() + "/konsentrasi/" + focusId)
+		if err == nil {
+			temp.Focus = focus
+		}
+		gradeId := strconv.Itoa(int(resultRepo.GradeID))
+		grade, err := helper.CallService(config.MasterServiceHost() + "/grade/" + gradeId)
+		if err == nil {
+			temp.Grade = grade
+		}
 		results = append(results, temp)
 	}
-	paginationQueries := map[string]any{}
-	if query != "" {
-		paginationQueries["q"] = query
+	if !withoutPagination {
+		paginationQueries := map[string]any{}
+		if query != "" {
+			paginationQueries["q"] = query
+		}
+		if orderBy != "" {
+			paginationQueries["order_by"] = orderBy
+		}
+		if orderWith != "" {
+			paginationQueries["order"] = orderWith
+		}
+		pagination = domain.CreatePagination(page, maxPage, paginationQueries)
 	}
-	if orderBy != "" {
-		paginationQueries["order_by"] = orderBy
-	}
-	if orderWith != "" {
-		paginationQueries["order"] = orderWith
-	}
-	pagination = domain.CreatePagination(page, maxPage, paginationQueries)
 	return results, pagination, nil
 }
 func (c *classService) GetClassInfo(ctx context.Context, id uint) (domain.ClassEntity, error) {
@@ -79,8 +100,19 @@ func (c *classService) GetClassInfo(ctx context.Context, id uint) (domain.ClassE
 		return result, err
 	}
 	// TODO: panggil api lain untuk mendapatkan detail (preload)
-	if err := helper.Convert(resultRepo[0], &result); err != nil {
+	data := resultRepo[0]
+	if err := helper.Convert(data, &result); err != nil {
 		return result, domain.ErrConversionType
+	}
+	focusId := strconv.Itoa(int(result.FocusID))
+	focus, err := helper.CallService(config.MasterServiceHost() + "/konsentrasi/" + focusId)
+	if err == nil {
+		result.Focus = focus
+	}
+	gradeId := strconv.Itoa(int(result.GradeID))
+	grade, err := helper.CallService(config.MasterServiceHost() + "/grade/" + gradeId)
+	if err == nil {
+		result.Grade = grade
 	}
 	return result, nil
 }

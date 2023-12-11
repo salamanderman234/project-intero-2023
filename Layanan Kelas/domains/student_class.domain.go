@@ -9,28 +9,28 @@ import (
 
 type StudentClassModel struct {
 	gorm.Model
-	ClassID 	*uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
-	StudentID 	*uint `json:"student_id" gorm:"not null" valid:"int~student id field must be an integer,required~student id field is required"`
-	Year 		*uint `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
+	ClassID   *uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
+	StudentID *uint `json:"student_id" gorm:"not null" valid:"int~student id field must be an integer,required~student id field is required"`
+	Year      *uint `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
 }
 type StudentClassEntity struct {
-	ID 			uint  `json:"id"`
+	ID uint `json:"id"`
 	// ClassID 	*uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
-	Class		any   `json:"class"`
-	StudentID 	*uint `json:"student_id" gorm:"not null" valid:"int~student id field must be an integer,required~student id field is required"`
-	Year 		*uint `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
+	Class     any            `json:"class"`
+	StudentID *uint          `json:"student_id" gorm:"not null" valid:"int~student id field must be an integer,required~student id field is required"`
+	Student   map[string]any `json:"student"`
+	Year      *uint          `json:"year" gorm:"int~year field must be an integer,required~year field is required"`
 }
 
 type AssignStudentForm struct {
-	ClassID 	uint 	`json:"class_id" gorm:"not null" valid:"int,required~class id field is required"`
-	StudentID 	uint 	`json:"student_id" gorm:"not null" valid:"int,required~student id field is required"`
-	Year 		uint 	`json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	ClassID   uint `json:"class_id" gorm:"not null" valid:"int,required~class id field is required"`
+	StudentID uint `json:"student_id" gorm:"not null" valid:"int,required~student id field is required"`
+	Year      uint `json:"year" valid:"int~year field must be an integer,required~year field is required"`
 }
 
-func(AssignStudentForm) GetModelName() string {
+func (AssignStudentForm) GetModelName() string {
 	return "student_classes"
 }
-
 
 func (StudentClassModel) TableName() string {
 	return "student_classes"

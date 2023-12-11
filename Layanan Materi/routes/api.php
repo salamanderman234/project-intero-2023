@@ -27,3 +27,6 @@ Route::apiResource('class-subject-material-check', ClassSubjectMaterialCheckCont
 Route::apiResource('class-subject-assignment', ClassSubjectAssignmentController::class);
 Route::apiResource('assignment-submission', ClassSubjectAssignmentSubmissionController::class);
 
+Route::get("class-subject-material/{id}/get_by_class_subject", [ClassSubjectMaterialController::class, "getByClassSubject"]);
+Route::get("class-subject-assignment/{id}/get_by_class_subject", [ClassSubjectAssignmentController::class, "getByClassSubject"]);
+

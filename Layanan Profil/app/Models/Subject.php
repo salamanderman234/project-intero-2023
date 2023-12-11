@@ -8,6 +8,6 @@ class Subject extends Model
 {
     public function teacher()
     {
-        return $this->hasOne(Teacher::class);
+        return $this->hasMany(Teacher::class);
     }
 }

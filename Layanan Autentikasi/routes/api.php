@@ -22,3 +22,6 @@ Route::group(['middleware' => 'api','prefix' => 'auth'], function ($router) {
     Route::post('refresh', [AuthController::class,'refresh']);
     Route::post('me', [AuthController::class,'me']);
 });
+Route::get('/user/{user}',[AuthController::class,"getUser"]);
+Route::post('/user/{user}/change_password',[AuthController::class,"changePassword"]);
+Route::delete("/user/{user}",[AuthController::class,"deleteUser"]);

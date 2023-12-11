@@ -39,7 +39,7 @@ func basicCreateView(c echo.Context, fun createViewServiceCallFunc, form domain.
 	return respStatusCode, resp
 }
 
-type searchViewServiceCallFunc func(q string, page uint, orderBy string, order string) (any, domain.Pagination, error)
+type searchViewServiceCallFunc func(q string, page uint, orderBy string, order string, withPagination bool) (any, domain.Pagination, error)
 type findViewServiceCallFunc func(id uint) (any, error)
 
 func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findFunc findViewServiceCallFunc) (int, domain.BasicResponse) {
@@ -55,13 +55,14 @@ func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findF
 	var id uint
 	var orderBy string
 	var order string
+	var withoutPagination bool
 
 	if errs := echo.QueryParamsBinder(c).
 		Uint("page", &page).
 		Uint("id", &id).
 		String("q", &query).
 		String("order_by", &orderBy).
-		String("order", &order).
+		String("order", &order).Bool("without_pagination", &withoutPagination).
 		BindErrors(); len(errs) > 0 {
 		resp.Message = "request error"
 		resp.Errors = helper.GenerateBindingErrorDetail(errs)
@@ -80,7 +81,7 @@ func basicSearchView(c echo.Context, searchFunc searchViewServiceCallFunc, findF
 		}
 		resp.Data = datas
 	} else {
-		datas, pagination, err = searchFunc(query, page, orderBy, order)
+		datas, pagination, err = searchFunc(query, page, orderBy, order, withoutPagination)
 		if err != nil {
 			respStatusCode, resp.Message, resp.Errors = handleErrorResponse(err)
 			return respStatusCode, resp

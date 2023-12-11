@@ -19,11 +19,32 @@ class AuthController extends Controller
     //     $this->middleware('auth:api', ['except' => ['login','register']]);
     // }
 
+    public function deleteUser(User $user) {
+        $user->delete();
+        return response()->json(["message" => "ok"],200);
+    }
+    public function changePassword(Request $request, User $user) {
+        if($request->has("password")) {
+            $password = $request->input('password');
+            $hashed = Hash::make($password);
+
+            $user->password = $hashed;
+            $user->save();
+        }
+        return response()->json(["message" => "ok"], 200);
+    }
+    public function getUser(User $user) {
+        return response()->json([
+            "message" => "ok",
+            "data" => $user,
+        ],200);
+    }
+
     public function register()
     {
         $validator = Validator::make(request()->all(),[
             'name' =>'required',
-            'email' =>'required|email|unique:users',
+            'email' =>'required|unique:users,email',
             'password' => 'required',
             'role' =>'required|in:admin,teacher,student',
         ]);
@@ -40,7 +61,7 @@ class AuthController extends Controller
         ]);
 
         if ($user){
-            return response()->json(['message' => 'Successfully Registered']);
+            return response()->json(['message' => 'Successfully Registered', "data" => $user]);
         }else{
             return response()->json(['message' => 'Something went wrong']);
         }

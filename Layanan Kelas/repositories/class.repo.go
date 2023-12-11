@@ -21,7 +21,7 @@ func (c *classRepository) Create(ctx context.Context, data domain.ClassModel) (d
 	_, err := basicCreateFunc(ctx, c.db, &data)
 	return data, err
 }
-func (c *classRepository) Read(ctx context.Context, query string, id uint, page uint, orderBy string, orderWith string) ([]domain.ClassModel, uint,error) {
+func (c *classRepository) Read(ctx context.Context, query string, id uint, page uint, orderBy string, orderWith string) ([]domain.ClassModel, uint, error) {
 	var results []domain.ClassModel
 	var maxPage int64
 	var err error
@@ -38,7 +38,7 @@ func (c *classRepository) Read(ctx context.Context, query string, id uint, page 
 			Joins("join grades on grades.id = classes.grade_id")
 		_, maxPage, err = basicSearchFunc(ctx, c.db, *searchQuery, page, orderBy, orderWith, domain.ClassModel{}, &results)
 	}
-	return results, uint(maxPage) ,err
+	return results, uint(maxPage), err
 }
 func (c *classRepository) Update(ctx context.Context, id uint, data domain.ClassModel) (int, domain.ClassModel, error) {
 	result, err := basicUpdateFunc(ctx, c.db, id, &data)
@@ -47,4 +47,10 @@ func (c *classRepository) Update(ctx context.Context, id uint, data domain.Class
 func (c *classRepository) Delete(ctx context.Context, id uint) (int, error) {
 	result, err := basicDeleteFunc(ctx, c.db, id, &domain.ClassModel{})
 	return int(result.RowsAffected), err
+}
+
+func (c *classRepository) GetAll(ctx context.Context) ([]domain.ClassModel, error) {
+	var classes []domain.ClassModel
+	result := c.db.WithContext(ctx).Model(&domain.ClassModel{}).Find(&classes)
+	return classes, handleRepositoryError(result)
 }

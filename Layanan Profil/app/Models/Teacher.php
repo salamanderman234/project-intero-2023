@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Teacher extends Model
 {
+    protected $hidden = ["created_at","updated_at","deleted_at"];
+    protected $guarded = ["id", "user_id"];
     protected $fillable = [
         'name',
         'user_id',
@@ -25,7 +27,7 @@ class Teacher extends Model
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class, 'subject_id');
+        return $this->belongsTo(Subject::class);
     }
     
 }

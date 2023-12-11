@@ -16,6 +16,10 @@ class ClassSubjectMaterialController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function getByClassSubject(int $id) {
+        $datas = ClassSubjectMaterial::where("class_subject_id", $id)->get();
+        return response()->json(["message" => "ok", "results" => $datas]);
+    }
     public function index()
     {
         try {

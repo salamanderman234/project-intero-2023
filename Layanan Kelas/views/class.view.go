@@ -17,11 +17,11 @@ func NewClassView(c domain.ClassService) domain.ClassView {
 func (cv *classView) Create(c echo.Context) error {
 	requestContext := c.Request().Context()
 	form := domain.ClassCreateForm{}
-	servFunc := func (createdForm domain.Form) (any, error) {
+	servFunc := func(createdForm domain.Form) (any, error) {
 		data := createdForm.(*domain.ClassCreateForm)
 		return cv.classService.CreateClass(requestContext, *data)
 	}
-	bindFunc := func () ([]error) {
+	bindFunc := func() []error {
 		return echo.FormFieldBinder(c).
 			Uint("focus_id", &form.FocusID).
 			Uint("grade_id", &form.GradeID).
@@ -33,8 +33,8 @@ func (cv *classView) Create(c echo.Context) error {
 }
 func (cv *classView) Read(c echo.Context) error {
 	requestContext := c.Request().Context()
-	searchFunc := func(q string, page uint, orderBy string, order string) (any, domain.Pagination, error){
-		return cv.classService.GetClassList(requestContext, q, page, orderBy, order)
+	searchFunc := func(q string, page uint, orderBy string, order string, withoutPagination bool) (any, domain.Pagination, error) {
+		return cv.classService.GetClassList(requestContext, q, page, orderBy, order, withoutPagination)
 	}
 	findFunc := func(id uint) (any, error) {
 		return cv.classService.GetClassInfo(requestContext, uint(id))
@@ -46,11 +46,11 @@ func (cv *classView) Read(c echo.Context) error {
 func (cv *classView) Update(c echo.Context) error {
 	requestContext := c.Request().Context()
 	form := domain.ClassUpdateForm{}
-	servFunc := func (id uint, updateForm domain.Form) (int, any, error) {
+	servFunc := func(id uint, updateForm domain.Form) (int, any, error) {
 		data := updateForm.(*domain.ClassUpdateForm)
 		return cv.classService.UpdateClassInfo(requestContext, id, *data)
 	}
-	bindFunc := func () ([]error) {
+	bindFunc := func() []error {
 		return echo.FormFieldBinder(c).
 			Uint("focus_id", &form.FocusID).
 			Uint("grade_id", &form.GradeID).
@@ -62,7 +62,7 @@ func (cv *classView) Update(c echo.Context) error {
 }
 func (cv *classView) Delete(c echo.Context) error {
 	requestContext := c.Request().Context()
-	deleteFunc := func(id uint) (error){
+	deleteFunc := func(id uint) error {
 		_, err := cv.classService.DeleteClass(requestContext, id)
 		return err
 	}

@@ -13,6 +13,10 @@ use Illuminate\Http\Response;
 class ClassSubjectAssignmentController extends Controller
 {
     use ResponseTrait;
+    public function getByClassSubject(int $id) {
+        $datas = ClassSubjectAssignment::where("class_subject_id", $id)->get();
+        return response()->json(["message" => "ok", "results" => $datas]);
+    }
     /**
      * Display a listing of the resource.
      */

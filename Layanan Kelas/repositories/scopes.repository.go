@@ -9,23 +9,23 @@ import (
 )
 
 const (
-	DATA_PERPAGE = 10
+	DATA_PERPAGE = 5
 )
 
-func paginateScope(page uint) func(db *gorm.DB) *gorm.DB{
+func paginateScope(page uint) func(db *gorm.DB) *gorm.DB {
 	return func(db *gorm.DB) *gorm.DB {
-		offset := DATA_PERPAGE*(page - 1)
+		offset := DATA_PERPAGE * (page - 1)
 		return db.Offset(int(offset)).Limit(DATA_PERPAGE)
 	}
 }
 
 var (
-	orderWith = struct{
+	orderWith = struct {
 		DESC string
-		ASC string
+		ASC  string
 	}{
 		DESC: "DESC",
-		ASC: "ASC",
+		ASC:  "ASC",
 	}
 )
 
@@ -36,8 +36,8 @@ func orderScope(model any, by string, sortWith string) func(db *gorm.DB) *gorm.D
 			return db
 		}
 		column := clause.Column{Name: s.Table + ".updated_at"}
-		sortStatement := clause.OrderByColumn{Column: column, Desc: true, }
-		if by != ""{
+		sortStatement := clause.OrderByColumn{Column: column, Desc: true}
+		if by != "" {
 			valid := false
 			for _, field := range s.Fields {
 				if by == field.Name {

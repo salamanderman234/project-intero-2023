@@ -9,44 +9,46 @@ import (
 
 type ClassSubjectModel struct {
 	gorm.Model
-	SubjectID 	*uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
-	TeacherID 	*uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
-	ClassID 	*uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
-	Year 		uint  `json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	SubjectID *uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
+	TeacherID *uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
+	ClassID   *uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
+	Year      uint  `json:"year" valid:"int~year field must be an integer,required~year field is required"`
 }
 
-func(ClassSubjectModel) TableName() string {
+func (ClassSubjectModel) TableName() string {
 	return "class_subjects"
 }
 
 type ClassSubjectEntity struct {
-	ID 			uint  			`json:"id,omitempty"`
-	SubjectID 	*uint 			`json:"subject_id,omitempty" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
-	Subject		any 			`json:"subject,omitempty"`
-	TeacherID 	*uint 			`json:"teacher_id,omitempty" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
-	Teacher 	any 			`json:"teacher,omitempty"`
-	Class		any 			`json:"class,omitempty"`
-	Year 		uint  			`json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	ID          uint  `json:"id,omitempty"`
+	SubjectID   *uint `json:"subject_id,omitempty" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
+	Subject     any   `json:"subject,omitempty"`
+	TeacherID   *uint `json:"teacher_id,omitempty" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
+	Teacher     any   `json:"teacher,omitempty"`
+	Class       any   `json:"class,omitempty"`
+	Year        uint  `json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	Assignments any   `json:"assignments"`
+	Materials   any   `json:"materials"`
 }
 
 type ClassSubjectCreateForm struct {
-	SubjectID 	uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
-	TeacherID 	uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
-	ClassID 	uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
-	Year 		uint  `json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	SubjectID uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
+	TeacherID uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
+	ClassID   uint `json:"class_id" gorm:"not null" valid:"int~class id field must be an integer,required~class id field is required"`
+	Year      uint `json:"year" valid:"int~year field must be an integer,required~year field is required"`
 }
 
-func(ClassSubjectCreateForm) GetModelName() string {
+func (ClassSubjectCreateForm) GetModelName() string {
 	return "class_subjects"
 }
 
 type ClassSubjectUpdateForm struct {
-	SubjectID 	uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
-	TeacherID 	uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
-	Year 		uint  `json:"year" valid:"int~year field must be an integer,required~year field is required"`
+	SubjectID uint `json:"subject_id" gorm:"not null" valid:"int~subject id field must be an integer,required~subject id field is required"`
+	TeacherID uint `json:"teacher_id" gorm:"not null" valid:"int~teacher id field must be an integer,required~teacher id field is required"`
+	Year      uint `json:"year" valid:"int~year field must be an integer,required~year field is required"`
 }
 
-func(ClassSubjectUpdateForm) GetModelName() string {
+func (ClassSubjectUpdateForm) GetModelName() string {
 	return "class_subjects"
 }
 
@@ -65,7 +67,7 @@ type ClassSubjectService interface {
 	// FindClassSubject(c context.Context, id uint) (ClassSubjectEntity, error)
 	GetClassSubject(c context.Context, id uint, classId uint, studentId uint, teacherId uint, year uint, page uint, orderBy string, orderWith string) ([]ClassSubjectEntity, Pagination, error)
 	UpdateClassSubject(c context.Context, id uint, data ClassSubjectUpdateForm) (int64, ClassSubjectEntity, error)
-	DeleteClassSubject(c context.Context, id uint) (error)
+	DeleteClassSubject(c context.Context, id uint) error
 }
 
 type ClassSubjectView interface {

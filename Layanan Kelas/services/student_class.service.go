@@ -2,20 +2,22 @@ package service
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/salamanderman234/project-intro-2023/layanan-kelas/config"
 	domain "github.com/salamanderman234/project-intro-2023/layanan-kelas/domains"
 	helper "github.com/salamanderman234/project-intro-2023/layanan-kelas/helpers"
 )
 
 type studentClassService struct {
 	studentClassRepo domain.StudentClassRepository
-	classService domain.ClassService
+	classService     domain.ClassService
 }
 
 func NewStudentClassService(r domain.StudentClassRepository, sr domain.ClassService) domain.StudentClassService {
 	return &studentClassService{
 		studentClassRepo: r,
-		classService: sr,
+		classService:     sr,
 	}
 }
 
@@ -24,19 +26,19 @@ func (s *studentClassService) AssignStudent(ctx context.Context, assignForm doma
 		return 0, 0, errs
 	}
 	// TODO: panggil api untuk mengecek apakah id benar-benar ada
-	results, _ := s.GetStudentClassList(ctx ,assignForm.StudentID,assignForm.ClassID, assignForm.Year)
+	results, _ := s.GetStudentClassList(ctx, assignForm.StudentID, assignForm.ClassID, assignForm.Year)
 	if len(results) > 0 {
-		return 0,0,domain.ErrDuplicateEnties
+		return 0, 0, domain.ErrDuplicateEnties
 	}
 	data := domain.StudentClassModel{
 		StudentID: &assignForm.StudentID,
-		ClassID: &assignForm.ClassID,
-		Year: &assignForm.Year,
+		ClassID:   &assignForm.ClassID,
+		Year:      &assignForm.Year,
 	}
 	created, err := s.studentClassRepo.Create(ctx, data)
 	if err != nil {
 		return 0, 0, err
-	}	
+	}
 	return *created.ClassID, *created.StudentID, nil
 }
 func (s *studentClassService) UnasssignStudent(ctx context.Context, assignForm domain.AssignStudentForm) (bool, error) {
@@ -47,7 +49,7 @@ func (s *studentClassService) UnasssignStudent(ctx context.Context, assignForm d
 	_, err := s.studentClassRepo.Delete(ctx, assignForm.ClassID, assignForm.StudentID, assignForm.Year)
 	if err != nil {
 		return false, err
-	}	
+	}
 	return true, nil
 }
 
@@ -58,6 +60,7 @@ func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId
 	if err != nil {
 		return nil, err
 	}
+
 	for _, result := range results {
 		temp := domain.StudentClassEntity{}
 		err := helper.Convert(result, &temp)
@@ -67,8 +70,14 @@ func (s *studentClassService) GetStudentClassList(ctx context.Context, studentId
 		class, err := s.classService.GetClassInfo(ctx, *result.ClassID)
 		if err == nil {
 			temp.Class = class
-			resultsClass = append(resultsClass, temp)
 		}
+		studentID := strconv.Itoa(int(*result.StudentID))
+		student, err := helper.CallService(config.ProfileServiceHost() + "/profileSiswa/" + studentID)
+		if err == nil {
+			temp.Student = student
+		}
+		resultsClass = append(resultsClass, temp)
+
 	}
 	return resultsClass, nil
 }
