@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File; 
 
 class ClassSubjectAssignmentSubmissionController extends Controller
 {
@@ -24,7 +26,11 @@ class ClassSubjectAssignmentSubmissionController extends Controller
     {
         try {
             // Get data
-            $data = ClassSubjectAssignmentSubmission::all();
+            $data = ClassSubjectAssignmentSubmission::when(request('class_subject_assignment_id'), function ($query) {
+                $query->where('class_subject_assignment_id', request('class_subject_assignment_id'));
+            })->when(request('student_id'), function ($query) {
+                $query->where('student_id', request('student_id'));
+            })->get();
             return $this->responseSuccess($data, 'Class Subject Assignment Submission List Fetch Successfully');
         } catch (\Exception $e) {
             return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -34,25 +40,13 @@ class ClassSubjectAssignmentSubmissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ClassSubjectAssignmentSubmissionRequest $request)
     {
         try {
-            $fileType = ClassSubjectAssignment::find($request->class_subject_assignment_id);
-            $validator = Validator::make($request->all(), 
-                [
-                    'attachment' => 'nullable|mimes:'.$fileType->submission_content_type.'|max:2048',
-                ],
-                [
-                    'attachment' => 'Kolom :attribute harus berupa file '.$fileType->submission_content_type.' dengan ukuran maksimal :max kilobyte.',
-                ]
-            );
-            if ($validator->fails()) {
-                return $this->responseError($validator->errors(), 'Data tidak valid.', Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
             $validatedData = $request->all();
             // Upload image
             if (!empty($validatedData['attachment'])) {
-                $titleShort      = Str::slug(substr($fileType->description, 0, 20));
+                $titleShort      = Str::slug(substr($validatedData['attachment']->getClientOriginalName(), 0, 20));
                 $validatedData['attachment'] = UploadHelper::upload('attachment', $validatedData['attachment'], $titleShort . '-' . time(), 'attachment/submission');
             }
             // Create data
@@ -92,20 +86,19 @@ class ClassSubjectAssignmentSubmissionController extends Controller
             if (is_null($data)){
                 return $this->responseError(null, 'Class Subject Assignment Submission Not Found.', Response::HTTP_NOT_FOUND);
             }
-            $fileType = ClassSubjectAssignment::find($request->class_subject_assignment_id);
-            $validator = Validator::make($request->all(), 
-                [
-                    'attachment' => 'nullable|mimes:'.$fileType->submission_content_type.'|max:2048',
-                ],
-                [
-                    'attachment' => 'Kolom :attribute harus berupa file '.$fileType->submission_content_type.' dengan ukuran maksimal :max kilobyte.',
-                ]
-            );
-            if ($validator->fails()) {
-                return $this->responseError($validator->errors(), 'Data tidak valid.', Response::HTTP_INTERNAL_SERVER_ERROR);
+            // Delete the old attachment file
+            if (!empty($data->attachment)) {
+                UploadHelper::deleteFile('attachment/submission/' . $data->attachment);
+            }
+    
+            $validatedData = $request->all();
+            // Upload image
+            if (!empty($validatedData['attachment'])) {
+                $titleShort      = Str::slug(substr($validatedData['attachment']->getClientOriginalName(), 0, 20));
+                $validatedData['attachment'] = UploadHelper::upload('attachment', $validatedData['attachment'], $titleShort . '-' . time(), 'attachment/submission');
             }
             // Update Data
-            $data->update($request->all());
+            $data->update($validatedData);
             return $this->responseSuccess($data, 'Class Subject Assignment Submission Updated Successfully!');
         } catch (\Exception $e) {
             return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

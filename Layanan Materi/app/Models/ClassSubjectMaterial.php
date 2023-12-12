@@ -17,6 +17,16 @@ class ClassSubjectMaterial extends Model
         return $this->belongsTo(ClassSubject::class,'class_subject_id', 'id');
     }
 
+    public function progres_check()
+    {
+        return $this->belongsTo(ClassSubjectMaterialCheck::class,'class_subject_material_id', 'id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class,'student_id', 'id');
+    }
+
     public function material_attachments()
     {
         return $this->hasMany(ClassSubjectMaterialAttachment::class,'class_subject_material_id', 'id');

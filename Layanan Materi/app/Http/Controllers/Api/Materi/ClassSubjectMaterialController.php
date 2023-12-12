@@ -20,7 +20,9 @@ class ClassSubjectMaterialController extends Controller
     {
         try {
             // Get data
-            $data = ClassSubjectMaterial::all();
+            $data = ClassSubjectMaterial::with('progres_check')->when(request('class_subject_id'), function ($query) {
+                $query->where('class_subject_id', request('class_subject_id'));
+            })->get();
             return $this->responseSuccess($data, 'Class Subject Material List Fetch Successfully');
         } catch (\Exception $e) {
             return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
