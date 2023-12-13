@@ -19,10 +19,19 @@ class ClassSubjectMaterialController extends Controller
     public function index()
     {
         try {
-            // Get data
-            $data = ClassSubjectMaterial::with('progres_check')->when(request('class_subject_id'), function ($query) {
-                $query->where('class_subject_id', request('class_subject_id'));
-            })->get();
+            $class_subject_id = request('class_subject_id');
+            $student_id = request('student_id');
+
+            $data = ClassSubjectMaterial::with(['progres_checks' => function ($query) use ($student_id) {
+                if ($student_id) {
+                    $query->where('student_id', $student_id);
+                }
+            }])
+            ->when($class_subject_id, function ($query) use ($class_subject_id) {
+                $query->where('class_subject_id', $class_subject_id);
+            })
+            ->get();
+            
             return $this->responseSuccess($data, 'Class Subject Material List Fetch Successfully');
         } catch (\Exception $e) {
             return $this->responseError(null, $e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);

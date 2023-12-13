@@ -63,8 +63,7 @@ class ClassSubjectMaterialCheckController extends Controller
                 return $this->responseError(null, 'Class Subject Material Check Not Found.', Response::HTTP_NOT_FOUND);
             }
             // Save Data
-            $data->deleted_at = date('Y-m-d H:i:s');
-            $data->save();
+            $data->delete();
             if (!$data) {
                 return $this->responseError(null, 'Failed to delete the Class Subject Material Check.', Response::HTTP_INTERNAL_SERVER_ERROR);
             }
