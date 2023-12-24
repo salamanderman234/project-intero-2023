@@ -1,0 +1,222 @@
+{
+    "data": [
+      {
+        "id": 1,
+        "no_kk": "1234567890",
+        "nama_kepala_keluarga": "John Doe",
+        "rt": "001",
+        "rw": "002",
+        "kode_pos": "12345",
+        "kecamatan": "Kecamatan A",
+        "kabupaten": "Kabupaten X",
+        "provinsi": "Provinsi Y",
+        "anggota_keluarga": [
+          {
+            "id_penduduk": 1,
+            "nik": "1234567890123456",
+            "nama": "Jane Doe As DS AS",
+            "jenis_kelamin": "Perempuan",
+            "tempat_lahir": "Tempat Lahir 1",
+            "tanggal_lahir": "2000-01-01",
+            "agama": "Islam",
+            "golongan_darah": "A",
+            "status_perkawinan": "Kawin",
+            "status_hubungan_keluarga": "Istri",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 1",
+            "nama_ibu": "Ibu 1",
+            "alamat": "Alamat 1",
+            "rt": 1,
+            "rw": 2,
+            "kel/desa": "Kel/Desa 1",
+            "kecamatan": "Kecamatan A",
+            "kabupaten": "Kabupaten X",
+            "provinsi": "Provinsi Y",
+            "status": "Masih Hidup"
+          },
+          {
+            "id_penduduk": 2,
+            "nik": "7890123456789012",
+            "nama": "John Jr.",
+            "jenis_kelamin": "Laki-laki",
+            "tempat_lahir": "Tempat Lahir 2",
+            "tanggal_lahir": "2005-02-02",
+            "agama": "Kristen Katolik",
+            "golongan_darah": "B",
+            "status_perkawinan": "Belum Kawin",
+            "status_hubungan_keluarga": "Anak",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 1",
+            "nama_ibu": "Ibu 1",
+            "alamat": "Alamat 2",
+            "rt": 3,
+            "rw": 4,
+            "kel/desa": "Kel/Desa 2",
+            "kecamatan": "Kecamatan B",
+            "kabupaten": "Kabupaten Y",
+            "provinsi": "Provinsi Z",
+            "status": "Masih Hidup"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "no_kk": "0987654321",
+        "nama_kepala_keluarga": "Alice Smith",
+        "rt": "005",
+        "rw": "006",
+        "kode_pos": "54321",
+        "kecamatan": "Kecamatan C",
+        "kabupaten": "Kabupaten Z",
+        "provinsi": "Provinsi X",
+        "anggota_keluarga": [
+          {
+            "id_penduduk": 3,
+            "nik": "9876543210987654",
+            "nama": "Bob Smith",
+            "jenis_kelamin": "Laki-laki",
+            "tempat_lahir": "Tempat Lahir 3",
+            "tanggal_lahir": "1990-05-15",
+            "agama": "Kristen Protestan",
+            "golongan_darah": "O",
+            "status_perkawinan": "Kawin",
+            "status_hubungan_keluarga": "Suami",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 2",
+            "nama_ibu": "Ibu 2",
+            "alamat": "Alamat 3",
+            "rt": 5,
+            "rw": 6,
+            "kel/desa": "Kel/Desa 3",
+            "kecamatan": "Kecamatan C",
+            "kabupaten": "Kabupaten Z",
+            "provinsi": "Provinsi X",
+            "status": "Masih Hidup"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "no_kk": "1112223333",
+        "nama_kepala_keluarga": "Maria Rodriguez",
+        "rt": "003",
+        "rw": "004",
+        "kode_pos": "67890",
+        "kecamatan": "Kecamatan D",
+        "kabupaten": "Kabupaten Y",
+        "provinsi": "Provinsi W",
+        "anggota_keluarga": [
+          {
+            "id_penduduk": 4,
+            "nik": "1112233444555666",
+            "nama": "Juan Rodriguez",
+            "jenis_kelamin": "Laki-laki",
+            "tempat_lahir": "Tempat Lahir 4",
+            "tanggal_lahir": "1985-11-30",
+            "agama": "Katolik",
+            "golongan_darah": "A+",
+            "status_perkawinan": "Kawin",
+            "status_hubungan_keluarga": "Suami",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 3",
+            "nama_ibu": "Ibu 3",
+            "alamat": "Alamat 4",
+            "rt": 7,
+            "rw": 8,
+            "kel/desa": "Kel/Desa 4",
+            "kecamatan": "Kecamatan D",
+            "kabupaten": "Kabupaten Y",
+            "provinsi": "Provinsi W",
+            "status": "Masih Hidup",
+            "anggota_keluarga": [
+              {
+                "id_pendidikan": 1,
+                "jenis_pendidikan": "SD",
+                "keterangan": "Lulus",
+                "status": "Tamat"
+              },
+              {
+                "id_pendidikan": 2,
+                "jenis_pendidikan": "SMP",
+                "keterangan": "Lulus",
+                "status": "Tamat"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "no_kk": "5556667777",
+        "nama_kepala_keluarga": "Miguel Gonzalez",
+        "rt": "002",
+        "rw": "003",
+        "kode_pos": "24680",
+        "kecamatan": "Kecamatan E",
+        "kabupaten": "Kabupaten X",
+        "provinsi": "Provinsi V",
+        "anggota_keluarga": [
+          {
+            "id_penduduk": 5,
+            "nik": "5556667777888999",
+            "nama": "Luis Gonzalez",
+            "jenis_kelamin": "Laki-laki",
+            "tempat_lahir": "Tempat Lahir 5",
+            "tanggal_lahir": "1993-08-25",
+            "agama": "Islam",
+            "golongan_darah": "B+",
+            "status_perkawinan": "Belum Kawin",
+            "status_hubungan_keluarga": "Anak",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 4",
+            "nama_ibu": "Ibu 4",
+            "alamat": "Alamat 5",
+            "rt": 9,
+            "rw": 10,
+            "kel/desa": "Kel/Desa 5",
+            "kecamatan": "Kecamatan E",
+            "kabupaten": "Kabupaten X",
+            "provinsi": "Provinsi V",
+            "status": "Masih Hidup"
+          }
+        ]
+      },
+      {
+        "id": 5,
+        "no_kk": "9998887777",
+        "nama_kepala_keluarga": "Sofia Kim",
+        "rt": "006",
+        "rw": "005",
+        "kode_pos": "13579",
+        "kecamatan": "Kecamatan F",
+        "kabupaten": "Kabupaten Z",
+        "provinsi": "Provinsi U",
+        "anggota_keluarga": [
+          {
+            "id_penduduk": 6,
+            "nik": "9998887777666555",
+            "nama": "Jin Kim",
+            "jenis_kelamin": "Laki-laki",
+            "tempat_lahir": "Tempat Lahir 6",
+            "tanggal_lahir": "1980-12-10",
+            "agama": "Budha",
+            "golongan_darah": "AB",
+            "status_perkawinan": "Kawin",
+            "status_hubungan_keluarga": "Suami",
+            "kewarganegaraan": "WNI",
+            "nama_ayah": "Ayah 5",
+            "nama_ibu": "Ibu 5",
+            "alamat": "Alamat 6",
+            "rt": 11,
+            "rw": 12,
+            "kel/desa": "Kel/Desa 6",
+            "kecamatan": "Kecamatan F",
+            "kabupaten": "Kabupaten Z",
+            "provinsi": "Provinsi U",
+            "status": "Masih Hidup"
+          }
+        ]
+      }
+    ]
+  }
+  
